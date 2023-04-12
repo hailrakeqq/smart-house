@@ -1,0 +1,1 @@
+namespace SmartHouse.API.Controller;

@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "dgSpecHash": "NxBeMRJz2EVBAzGme4ZNC3L9ReNiFVkDTXeLvbK/+wq+K/ckEJ17KrhC+ZNtB2mspb95FeanzyB1ZvNSy0whFA==",
+  "success": false,
+  "projectFilePath": "C:\\Users\\user\\Desktop\\smart-house\\SmartHouse.API\\SmartHouse.API.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1301",
+      "level": "Error",
+      "message": "Не удалось загрузить индекс служб для источника https://api.nuget.org/v3/index.json.",
+      "libraryId": "Microsoft.AspNetCore.OpenApi"
+    },
+    {
+      "code": "NU1301",
+      "level": "Error",
+      "message": "Не удалось загрузить индекс служб для источника https://api.nuget.org/v3/index.json.",
+      "libraryId": "Swashbuckle.AspNetCore"
+    }
+  ]
+}
