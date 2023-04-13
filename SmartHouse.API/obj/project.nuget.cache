@@ -1,21 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "NxBeMRJz2EVBAzGme4ZNC3L9ReNiFVkDTXeLvbK/+wq+K/ckEJ17KrhC+ZNtB2mspb95FeanzyB1ZvNSy0whFA==",
-  "success": false,
-  "projectFilePath": "C:\\Users\\user\\Desktop\\smart-house\\SmartHouse.API\\SmartHouse.API.csproj",
-  "expectedPackageFiles": [],
-  "logs": [
-    {
-      "code": "NU1301",
-      "level": "Error",
-      "message": "Не удалось загрузить индекс служб для источника https://api.nuget.org/v3/index.json.",
-      "libraryId": "Microsoft.AspNetCore.OpenApi"
-    },
-    {
-      "code": "NU1301",
-      "level": "Error",
-      "message": "Не удалось загрузить индекс служб для источника https://api.nuget.org/v3/index.json.",
-      "libraryId": "Swashbuckle.AspNetCore"
-    }
-  ]
+  "dgSpecHash": "h6kmoeJ8aqhF8sJiLksloi9htTXE9QCy5yIC2GYhprHnBiwf9WKcuC10FWeXMXy73NJLmBvaWmVyzvar026lCQ==",
+  "success": true,
+  "projectFilePath": "/home/hailrake/media/code/smart-house/SmartHouse.API/SmartHouse.API.csproj",
+  "expectedPackageFiles": [
+    "/home/hailrake/.nuget/packages/microsoft.aspnetcore.openapi/7.0.5/microsoft.aspnetcore.openapi.7.0.5.nupkg.sha512",
+    "/home/hailrake/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "/home/hailrake/.nuget/packages/microsoft.openapi/1.4.3/microsoft.openapi.1.4.3.nupkg.sha512",
+    "/home/hailrake/.nuget/packages/swashbuckle.aspnetcore/6.4.0/swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
+    "/home/hailrake/.nuget/packages/swashbuckle.aspnetcore.swagger/6.4.0/swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
+    "/home/hailrake/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.4.0/swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",
+    "/home/hailrake/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.4.0/swashbuckle.aspnetcore.swaggerui.6.4.0.nupkg.sha512"
+  ],
+  "logs": []
 }

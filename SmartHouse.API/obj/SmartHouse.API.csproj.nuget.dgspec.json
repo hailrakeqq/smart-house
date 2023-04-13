@@ -1,25 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\user\\Desktop\\smart-house\\SmartHouse.API\\SmartHouse.API.csproj": {}
+    "/home/hailrake/media/code/smart-house/SmartHouse.API/SmartHouse.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\user\\Desktop\\smart-house\\SmartHouse.API\\SmartHouse.API.csproj": {
+    "/home/hailrake/media/code/smart-house/SmartHouse.API/SmartHouse.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\Desktop\\smart-house\\SmartHouse.API\\SmartHouse.API.csproj",
+        "projectUniqueName": "/home/hailrake/media/code/smart-house/SmartHouse.API/SmartHouse.API.csproj",
         "projectName": "SmartHouse.API",
-        "projectPath": "C:\\Users\\user\\Desktop\\smart-house\\SmartHouse.API\\SmartHouse.API.csproj",
-        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\Desktop\\smart-house\\SmartHouse.API\\obj\\",
+        "projectPath": "/home/hailrake/media/code/smart-house/SmartHouse.API/SmartHouse.API.csproj",
+        "packagesPath": "/home/hailrake/.nuget/packages/",
+        "outputPath": "/home/hailrake/media/code/smart-house/SmartHouse.API/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/hailrake/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
+          "/usr/share/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -66,7 +67,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/7.0.101/RuntimeIdentifierGraph.json"
         }
       }
     }
