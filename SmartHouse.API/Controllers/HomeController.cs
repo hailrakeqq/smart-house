@@ -7,9 +7,9 @@ namespace SmartHouse.API.Controllers;
 public class HomeController : Controller
 {
     [HttpGet]
-    public IActionResult GetData([FromQuery] string data)
+    public IActionResult GetData()
     {
-        System.Console.WriteLine("Recieved data: " + data);
-        return Ok(data);
+        System.Console.WriteLine("request work!");
+        return Ok("test");
     }
 }
