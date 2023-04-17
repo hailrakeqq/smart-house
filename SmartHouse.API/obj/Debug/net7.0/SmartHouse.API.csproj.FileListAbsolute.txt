@@ -31,3 +31,8 @@
 /home/hailrake/media/code/smart-house/SmartHouse.API/obj/Debug/net7.0/SmartHouse.API.pdb
 /home/hailrake/media/code/smart-house/SmartHouse.API/obj/Debug/net7.0/SmartHouse.API.genruntimeconfig.cache
 /home/hailrake/media/code/smart-house/SmartHouse.API/obj/Debug/net7.0/ref/SmartHouse.API.dll
+/home/hailrake/media/code/smart-house/SmartHouse.API/bin/Debug/net7.0/Microsoft.AspNetCore.JsonPatch.dll
+/home/hailrake/media/code/smart-house/SmartHouse.API/bin/Debug/net7.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+/home/hailrake/media/code/smart-house/SmartHouse.API/bin/Debug/net7.0/Newtonsoft.Json.dll
+/home/hailrake/media/code/smart-house/SmartHouse.API/bin/Debug/net7.0/Newtonsoft.Json.Bson.dll
+/home/hailrake/media/code/smart-house/SmartHouse.API/bin/Debug/net7.0/Telegram.Bot.dll
