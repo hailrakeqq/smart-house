@@ -5,7 +5,9 @@ const char* password = "0677170801";
 
 const String baseServerURL = "http://192.168.0.15:5198";
 
+Servo servo(4);
 WaterSensor waterSensor(A0);
+
 unsigned long lastTime = 0;
 unsigned long timerDelay = 10000;
 
@@ -18,6 +20,12 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
+
+  server.on("/servooff", servo.closeServo());
+  server.on("/servoon", servo.openServo());
+
+  server.begin();
+
   Serial.println("");
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
@@ -37,5 +45,6 @@ void waterSensorLifetimeCycle()
 
 void loop()
 {
-  waterSensorLifetimeCycle(); 
+  server.handleClient();
+  waterSensorLifetimeCycle();
 }
