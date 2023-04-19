@@ -1,4 +1,5 @@
-#include "include.h"
+#include <Arduino.h>
+#include <Servo.h>
 
 class servoMotor{
     private:

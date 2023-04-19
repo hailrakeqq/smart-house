@@ -1,12 +1,11 @@
-#include "include.h"
-#include <Servo.h>
-
+#include <Arduino.h>
+#include "servoMotor.h"
 servoMotor::servoMotor(int pin)
 {
     servo.attach(pin);
 }
 
-servoMotor::getServoStatus()
+String servoMotor::getServoStatus()
 {
     int servoPosition = servo.read();
     if(servoPosition == 0)
@@ -15,21 +14,16 @@ servoMotor::getServoStatus()
     return "Servo is open";
 }
 
-servoMotor::reset(){
-    servo.write(0);
+void servoMotor::reset(){
+    this->servo.write(0);
 }
 
-servoMotor::closeServo()
+void servoMotor::closeServo()
 {
-    servo.write(0);
+    this->servo.write(0);
 }
 
-servoMotor::openServo()
+void servoMotor::openServo()
 {
-    servo.write(90);
-}
-
-servoMotor::~servoMotor()
-{
-    servo.detach();
+    this->servo.write(90);
 }
