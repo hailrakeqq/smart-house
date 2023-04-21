@@ -1,7 +1,10 @@
 #include "include.h"
+#define CHANGESTATETYPE "change hardware state";
+#define GETSTATUSTYPE "get status";
 
 const char* ssid = "busya";
 const char* password = "0677170801";
+const int jsonObjectCapacity = JSON_OBJECT_SIZE(4);
 
 const String baseServerURL = "http://192.168.0.15:5198";
 
@@ -14,21 +17,43 @@ unsigned long timerDelay = 10000;
 
 void handle_close() 
 {  
+  String json;
+  StaticJsonDocument<jsonObjectCapacity> doc;
+
   servo.closeServo();
-  server.send(200, "text/plain", "servo was closed");
+
+  doc["type"] = CHANGESTATETYPE;
+  doc["timestamp"] = "";
+  doc["message"] = "servo was closed";
+  serializeJson(doc, json);
+
+  server.send(200, "application/json", json);
 }
 
 void handle_open() 
 {
+  String json;
+  StaticJsonDocument<jsonObjectCapacity> doc;
+
   servo.openServo();
-  server.send(200, "text/plain", "servo was opened");
+
+  doc["type"] = CHANGESTATETYPE;
+  doc["timestamp"] = "";
+  doc["message"] = "servo was opened";
+  serializeJson(doc, json);
+
+  server.send(200, "application/json", json);
 }
 
 void handle_sendServoStatus(){
   String json;
-  StaticJsonDocument<32> doc;
-  doc["ServoStatus"] = servo.getServoStatus(); 
+  StaticJsonDocument<jsonObjectCapacity> doc;
+
+  doc["type"] = GETSTATUSTYPE;
+  doc["timestamp"] = "";
+  doc["message"] = servo.getServoStatus();
   serializeJson(doc, json);
+  Serial.print(json);
   server.send(200, "application/json", json);
 }
 

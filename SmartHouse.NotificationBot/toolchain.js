@@ -1,9 +1,9 @@
 export class toolchain {
-    static parseMessage(message) {
-        if (!message.includes('|'))
-            return message;
-        let resultMessage = message.replace('|', '\n')
-        return resultMessage
+    static parseMessage(messageFromResponse) {
+        if (!messageFromResponse.Message.includes('|'))
+            return `Timestamp: ${messageFromResponse.Timestamp}\nMessage: ${messageFromResponse.Message}`;
+        let resultMessage = messageFromResponse.message.replace('|', '\n')
+        return `Timestamp: ${messageFromResponse.Timestamp}\nMessage: ${resultMessage}`
     }
 
     static water_keyboard = {

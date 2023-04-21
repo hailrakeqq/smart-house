@@ -11,28 +11,50 @@ global.bot = new Telegraf(process.env.TOKEN)
 const chatId = process.env.CHAT_ID
 
 app.get('/', (req, res) => {
-  const message = req.query.message || 'Hello, client!';
-  console.log(`Received a message from client: ${message}`);
-  bot.telegram.sendMessage(
-    chatId,
-    toolchain.parseMessage(message),
-    { reply_markup: toolchain.water_keyboard });
+  const response = req.query.message || 'Hello, client!';
+  console.log(`\n\nReceived a message from client: ${response}`);
   
-  res.send(`Message received: ${message}`);
-});
+  const parsedMessage = JSON.parse(response)
+  const messageFromResponse = toolchain.parseMessage(parsedMessage)
 
+  if (parsedMessage.Type === "warning water message") {   
+    bot.telegram.sendMessage(
+      chatId,
+      messageFromResponse,
+      { reply_markup: toolchain.water_keyboard });
+  } else {
+    bot.telegram.sendMessage(
+      chatId,
+      messageFromResponse)
+  }
+  res.send(`Message received: ${response}`);
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+
 bot.command("menu", async ctx => {
 	    return await ctx.reply(
 		    "Here our menu",
 		    Markup.keyboard([
-			    ["☸ Setting", "Site link"],
-			    ["⭐️ Github"], 
+			    ["☸ Setting"],
+			    ["⭐️ Links"], 
 		      ]).oneTime().resize(),
 	    );
     });
+
+bot.hears("☸ Setting", ctx => ctx.reply('here be settings!'))
+
+bot.hears("⭐️ Links", async ctx => {
+	    return await ctx.reply(
+        "Links: ",
+        Markup.inlineKeyboard([
+          [Markup.button.url("Site", "https://github.com/hailrakeqq/smart-house")],
+          [Markup.button.url("⭐️ Github", "https://github.com/hailrakeqq/smart-house")]
+        ])
+  )
+})
+
 bot.on('message', (ctx) => {
   const message = ctx.message.text || 'Hello, server!';
   console.log(`Received a message from bot: ${message}`);
@@ -51,7 +73,7 @@ bot.action('getServoStatus', ActionHandler.getServoStatus);
 
 
 bot.launch()   
-console.log("bot has been started");
+
 // Enable graceful stop
 process.once('SIGINT', () => bot.stop('SIGINT'))
 process.once('SIGTERM', () => bot.stop('SIGTERM'))

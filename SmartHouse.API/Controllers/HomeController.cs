@@ -12,6 +12,7 @@ public class HomeController : Controller
 {
     private string BOTurl = "http://localhost:3000/";
     private string MKurl = "http://192.168.0.12:4000/";
+    private string timestamp = DateTime.Now.ToString();
 
     [HttpPost]
     public IActionResult GetData([FromBody] MessageFromController json)
@@ -22,8 +23,7 @@ public class HomeController : Controller
     [HttpPost("GetMessageIfWaterWasDetected")]
     public void GetWaterLevel([FromBody] MessageFromController message)
     {
-        DateTime timestamp = DateTime.Now;
-        message.Timestamp = timestamp.ToString();
+        message.Timestamp = timestamp;
         System.Console.WriteLine("==============================================================");
         System.Console.WriteLine($"Timestamp: {message.Timestamp}");
         System.Console.WriteLine($"Message: {message.Message}");
@@ -31,9 +31,9 @@ public class HomeController : Controller
 
         using (var client = new WebClient())
         {
-            string messageToSend = $"Timestamp: {message.Timestamp}|Message: {message.Message}"; // Замените на своё сообщение
-            string url = $"http://localhost:3000/?message={Uri.EscapeDataString(messageToSend)}";
-            string response = client.DownloadString(url);
+            var messageToSend = JsonConvert.SerializeObject(message);
+            string packageToSend = BOTurl + $"?message={Uri.EscapeDataString(messageToSend)}";
+            string response = client.DownloadString(packageToSend);
             Console.WriteLine(response);
         }
     }
@@ -44,6 +44,17 @@ public class HomeController : Controller
         using (var client = new WebClient())
         {
             string request = client.DownloadString(MKurl + "getServoStatus");
+
+            // dynamic messageFromMK = JsonConvert.DeserializeObject(request);
+            // messageFromMK.timestamp = timestamp;
+
+            // request = JsonConvert.SerializeObject(messageFromMK);
+
+            var messageFromMK = JsonConvert.DeserializeObject<MessageFromController>(request);
+            messageFromMK.Timestamp = timestamp;
+
+            request = JsonConvert.SerializeObject(messageFromMK);
+
             var packageToSend = BOTurl + $"?message={Uri.EscapeDataString(request)}";
             client.DownloadString(packageToSend);
         }
@@ -55,6 +66,12 @@ public class HomeController : Controller
         using (var client = new WebClient())
         {
             string request = client.DownloadString(MKurl + "open");
+
+            var messageFromMK = JsonConvert.DeserializeObject<MessageFromController>(request);
+            messageFromMK.Timestamp = timestamp;
+
+            request = JsonConvert.SerializeObject(messageFromMK);
+
             var packageToSend = BOTurl + $"?message={Uri.EscapeDataString(request)}";
             client.DownloadString(packageToSend);
         }
@@ -66,6 +83,11 @@ public class HomeController : Controller
         using (var client = new WebClient())
         {
             string request = client.DownloadString(MKurl + "close");
+
+            var messageFromMK = JsonConvert.DeserializeObject<MessageFromController>(request);
+            messageFromMK.Timestamp = timestamp;
+
+            request = JsonConvert.SerializeObject(messageFromMK);
             var packageToSend = BOTurl + $"?message={Uri.EscapeDataString(request)}";
             client.DownloadString(packageToSend);
         }

@@ -6,8 +6,9 @@
 
 
 void httpClient::sendWaterDetectedMessageToServer(){
-    StaticJsonDocument<32> doc;
-    doc["timestamp"] = ""; 
+    StaticJsonDocument<128> doc;
+    doc["type"] = "warning water message";
+    doc["timestamp"] = "";
     doc["message"] = "Water was detected"; 
 
     String json;
