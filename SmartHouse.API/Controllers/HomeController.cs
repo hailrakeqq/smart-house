@@ -45,11 +45,6 @@ public class HomeController : Controller
         {
             string request = client.DownloadString(MKurl + "getServoStatus");
 
-            // dynamic messageFromMK = JsonConvert.DeserializeObject(request);
-            // messageFromMK.timestamp = timestamp;
-
-            // request = JsonConvert.SerializeObject(messageFromMK);
-
             var messageFromMK = JsonConvert.DeserializeObject<MessageFromController>(request);
             messageFromMK.Timestamp = timestamp;
 
@@ -93,3 +88,5 @@ public class HomeController : Controller
         }
     }
 }
+
+//TODO: вынести что можно в отдельные функции 

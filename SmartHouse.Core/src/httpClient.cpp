@@ -5,11 +5,16 @@
 #include <ArduinoJson.h>
 
 
-void httpClient::sendWaterDetectedMessageToServer(){
+void httpClient::sendDetectedMessageToServer(String type){
     StaticJsonDocument<128> doc;
-    doc["type"] = "warning water message";
     doc["timestamp"] = "";
-    doc["message"] = "Water was detected"; 
+    if(type == "water"){
+        doc["type"] = "warning water message";
+        doc["message"] = "Water was detected"; 
+    } else if( type == "carbonMonoxide"){
+        doc["type"] = "warning carbon monoxide message";
+        doc["message"] = "Carbon monoxide was detected"; 
+    }
 
     String json;
     serializeJson(doc, json);
@@ -19,6 +24,7 @@ void httpClient::sendWaterDetectedMessageToServer(){
                                             json);
     httpClient::printResponseLog(request);
 }
+
 
 std::map<int, String> httpClient::sendJSONToAPI(String apiEndpoint, String contentType, String SerializedJson)
 {

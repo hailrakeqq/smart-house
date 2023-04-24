@@ -9,7 +9,9 @@ const int jsonObjectCapacity = JSON_OBJECT_SIZE(4);
 const String baseServerURL = "http://192.168.0.15:5198";
 
 WaterSensor waterSensor(A0);
-servoMotor servo(2); // 2 ==== 4 nodemcu
+CarbonMonoxideSensor carbonMonoxideSensor(0); // 0 == d3
+servoMotor servo(2); // 2 == d4 nodemcu
+
 ESP8266WebServer server(4000);
 
 unsigned long lastTime = 0;
@@ -66,8 +68,7 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
-  // servo.attach(2); //D4 nodemcu
-  
+
   Serial.println("");
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
@@ -79,6 +80,17 @@ void setup() {
   server.begin();
 
   randomSeed(analogRead(0));
+  
+}
+
+void carbonMonoxideSensorLifetimeCycle(){
+  carbonMonoxideSensor.printCarbonMonoxideStatus();
+
+  if(carbonMonoxideSensor.isCarbonMonoxideDetected()){
+     Serial.println("Carbon monoxide was Detected!!!");
+     httpClient::sendDetectedMessageToServer("carbonMonoxide");
+  }
+   delay(10000);
 }
 
 void waterSensorLifetimeCycle() 
@@ -86,8 +98,8 @@ void waterSensorLifetimeCycle()
   waterSensor.printWaterLevel();
  
   if (waterSensor.isWaterDetected()){
-    Serial.println("Water Detect!!!");
-    httpClient::sendWaterDetectedMessageToServer();
+    Serial.println("Water was Detected!!!");
+    httpClient::sendDetectedMessageToServer("water");
   }
   delay(10000);
 }
@@ -96,5 +108,5 @@ void loop()
 {
   server.handleClient();
   waterSensorLifetimeCycle();
+  carbonMonoxideSensorLifetimeCycle();
 }
-
