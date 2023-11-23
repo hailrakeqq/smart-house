@@ -1,10 +1,42 @@
 <template>
   <nav>
-    <router-link to="/"></router-link> |
-    <router-link to="/about"></router-link>
+    <div v-if="isUserExist">
+      <router-link to="/">Home</router-link> |
+      <router-link to="/page">User</router-link>
+      <router-link to="/about">About</router-link>
+    </div>
+    <div v-else>
+      <router-link to="/">Home </router-link> |
+      <router-link to="/sign-in">Sign In </router-link> |
+      <router-link to="/sign-up">Sign Up </router-link>
+    </div>
   </nav>
   <router-view />
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+export default defineComponent({
+  name: "App",
+  components: {},
+  data() {
+    return {
+      isUserExist: false,
+    };
+  },
+  created() {
+    this.launchFunction();
+  },
+  methods: {
+    launchFunction() {
+      const storedItem = localStorage.getItem("your_key");
+      if (storedItem) {
+        this.isUserExist = true;
+      }
+    },
+  },
+});
+</script>
 
 <style lang="scss">
 #app {
@@ -21,7 +53,7 @@ nav {
   a {
     font-weight: bold;
     color: #2c3e50;
-
+    text-decoration: none;
     &.router-link-exact-active {
       color: #42b983;
     }

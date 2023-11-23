@@ -12,4 +12,5 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<User> users { get; set; }
     public DbSet<AuthRefreshToken> refreshtokens { get; set; }
+    public DbSet<Device> devices { get; set; }
 }
