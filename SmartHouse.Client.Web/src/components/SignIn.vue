@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Sign In</h2>
-    <form @submit.prevent="signIn" class="form-container">
+    <form @submit.prevent class="form-container">
       <CustomInput
         id="Email"
         name="email"
@@ -24,7 +24,7 @@
       <CustomButton
         :is-button-disabled="isButtonDisabled"
         class="btn"
-        @click="signIn"
+        @click="() => signIn()"
         >Sign In</CustomButton
       >
     </form>
@@ -69,6 +69,7 @@ export default defineComponent({
       const map = new Map(Object.entries(userDataFromResponse));
       map.forEach((value, key) => localStorage.setItem(key, value));
     },
+
     async signIn() {
       const userData = {
         email: this.email,
@@ -94,7 +95,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-form {
+.form-container {
   display: flex;
   flex-direction: column;
   max-width: 300px;

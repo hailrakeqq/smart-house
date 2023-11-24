@@ -2,8 +2,9 @@
   <nav>
     <div v-if="isUserExist">
       <router-link to="/">Home</router-link> |
-      <router-link to="/page">User</router-link>
-      <router-link to="/about">About</router-link>
+      <router-link to="/page">User</router-link> |
+      <router-link to="/about">About</router-link> |
+      <a @click="logout">Logout</a>
     </div>
     <div v-else>
       <router-link to="/">Home </router-link> |
@@ -24,12 +25,19 @@ export default defineComponent({
       isUserExist: false,
     };
   },
-  created() {
+
+  mounted() {
     this.launchFunction();
   },
   methods: {
+    logout() {
+      localStorage.clear();
+      this.$router.push("/");
+      location.reload();
+    },
+
     launchFunction() {
-      const storedItem = localStorage.getItem("your_key");
+      const storedItem = localStorage.getItem("email");
       if (storedItem) {
         this.isUserExist = true;
       }
@@ -51,6 +59,7 @@ nav {
   padding: 30px;
 
   a {
+    cursor: pointer;
     font-weight: bold;
     color: #2c3e50;
     text-decoration: none;

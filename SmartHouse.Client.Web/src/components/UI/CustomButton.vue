@@ -1,9 +1,5 @@
 <template>
-  <button
-    :disabled="isButtonDisabled"
-    class="custom-button"
-    @click="handleClick"
-  >
+  <button :disabled="isButtonDisabled" class="custom-button">
     <slot></slot>
   </button>
 </template>
@@ -15,11 +11,6 @@ export default defineComponent({
     isButtonDisabled: {
       type: Boolean,
       required: false,
-    },
-  },
-  methods: {
-    handleClick() {
-      this.$emit("click");
     },
   },
 });

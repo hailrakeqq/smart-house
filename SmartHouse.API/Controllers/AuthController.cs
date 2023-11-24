@@ -17,17 +17,17 @@ public class AuthController : Controller
 
     [HttpPost]
     [Route("Registration")]
-    public async Task<IActionResult> CreateUser([FromBody] User user)
+    public async Task<IActionResult> CreateUser([FromBody] UserLoginModel userData)
     {
-        var currentUser = await _userService.GetUserByEmail(user.Email);
+        var currentUser = await _userService.GetUserByEmail(userData.Email);
 
         if (currentUser == null)
         {
-            user = new User()
+            var user = new User()
             {
                 Id = Guid.NewGuid().ToString(),
-                Email = user.Email.ToLower(),
-                Password = Tool.GenerateHash(user.Password)
+                Email = userData.Email.ToLower(),
+                Password = Tool.GenerateHash(userData.Password)
             };
             var userRefreshToken = new AuthRefreshToken
             {

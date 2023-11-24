@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Sign Up</h2>
-    <form @submit.prevent="signUp">
+    <form @submit.prevent class="form">
       <CustomInput
         id="Email"
         name="email"
@@ -83,13 +83,12 @@ export default defineComponent({
     },
   },
   methods: {
-    signUp() {
+    async signUp() {
       const user = {
-        id: "",
         email: this.email,
         password: this.password,
       };
-      axios
+      await axios
         .post("/api/Auth/Registration", JSON.stringify(user), {
           headers: {
             "Content-Type": "application/json",
@@ -100,8 +99,11 @@ export default defineComponent({
             alert("You successfully create account. Redirect to login.");
             this.$router.push({ path: "/sign-in" });
           } else {
-            alert("Error. Account with these name or email already exist");
+            alert("Error an account with this email already exists");
           }
+        })
+        .catch((error) => {
+          console.log(error);
         });
     },
   },
@@ -109,7 +111,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-form {
+.form {
   display: flex;
   flex-direction: column;
   max-width: 300px;
