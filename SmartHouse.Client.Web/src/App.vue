@@ -2,7 +2,8 @@
   <nav>
     <div v-if="isUserExist">
       <router-link to="/">Home</router-link> |
-      <router-link to="/page">User</router-link> |
+      <router-link to="/account">Account</router-link> |
+      <router-link to="/settings">Settings</router-link> |
       <router-link to="/about">About</router-link> |
       <a @click="logout">Logout</a>
     </div>
