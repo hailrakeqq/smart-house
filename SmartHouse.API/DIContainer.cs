@@ -1,20 +1,12 @@
-using SmartHouse.API.Enitity;
 using SmartHouse.API.Services;
+
+namespace SmartHouse.API;
 
 public static class DIContainer
 {
-    public static IServiceCollection AddTokenService(this IServiceCollection services)
-    {
-        return services.AddTransient<ITokenService, TokenService>();
-    }
+    public static IServiceCollection AddLoggerService(this IServiceCollection services)
+        => services.AddTransient<ILoggerService, LoggerService>();
 
-    public static IServiceCollection AddLoginResponse(this IServiceCollection services)
-    {
-        return services.AddSingleton<LoginResponse>();
-    }
-
-    public static IServiceCollection AddUserService(this IServiceCollection services)
-    {
-        return services.AddTransient<IUserRepository, UserService>();
-    }
+    public static IServiceCollection AddEmailService(this IServiceCollection services)
+        => services.AddScoped<EmailService>();
 }

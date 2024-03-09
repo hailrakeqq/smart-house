@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-
 using SmartHouse.API.Enitity;
 
 namespace SmartHouse.API;
@@ -10,7 +9,5 @@ public class ApplicationDbContext : DbContext
     {
     }
 
-    public DbSet<User> users { get; set; }
-    public DbSet<AuthRefreshToken> refreshtokens { get; set; }
-    public DbSet<Device> devices { get; set; }
+    public DbSet<Log> logs { get; set; }
 }

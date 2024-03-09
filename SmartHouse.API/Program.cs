@@ -3,30 +3,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SmartHouse.API;
-using SmartHouse.API.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(option =>
-        option.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration.GetSection("Jwt").GetSection("Issuer").Value,
-            ValidAudience = builder.Configuration.GetSection("Jwt").GetSection("Audience").Value,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt").GetSection("Key").Value))
-        });
 builder.Services.AddHttpContextAccessor();
-
-builder.Services.AddCurrentUser();
-builder.Services.AddTokenService();
-builder.Services.AddLoginResponse();
-builder.Services.AddUserService();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -39,6 +19,9 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API for manage your smart home devices"
     });
 });
+
+builder.Services.AddLoggerService();
+builder.Services.AddEmailService();
 
 builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseNpgsql(
     builder.Configuration.GetConnectionString("LocalDefaultConnection")));
