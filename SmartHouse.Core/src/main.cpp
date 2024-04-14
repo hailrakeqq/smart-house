@@ -1,112 +1,232 @@
-#include "include.h"
-#define CHANGESTATETYPE "change hardware state";
-#define GETSTATUSTYPE "get status";
+#include "../include/toolchain.h"
+#include "../include/waterSensor.h"
+#include "../include/httpClient.h"
+#include "../include/uptime.h"
+#include <ArduinoJson.h>
+#include <ESP8266HTTPClient.h>
+#include <ESP8266WebServer.h>
+#include <ESP8266WiFi.h>
+#include <Servo.h>
+#include <WiFiClient.h>
+#include <map>
+#include <WiFiManager.h>
+#include <Servo.h>
 
-const char* ssid = "busya";
-const char* password = "0677170801";
-const int jsonObjectCapacity = JSON_OBJECT_SIZE(4);
+#pragma region setting_up
+//Comment this string to use solenoid valve
+#define IS_SERVO_USE 1
 
-const String baseServerURL = "http://192.168.0.15:5198";
+int button = D6;
+WiFiManager wm;
+WiFiManagerParameter email = WiFiManagerParameter("email", "email", "", 40); 
+WiFiManagerParameter api_address = WiFiManagerParameter("api_address", "api ip dns name address", "", 40); 
 
-WaterSensor waterSensor(A0);
-CarbonMonoxideSensor carbonMonoxideSensor(0); // 0 == d3
-servoMotor servo(2); // 2 == d4 nodemcu
+ESP8266WebServer server(80);
+IPAddress localIP;
+String externalIP;
 
-ESP8266WebServer server(4000);
+WiFiClient client;
+HttpClient* httpClient;
 
-unsigned long lastTime = 0;
-unsigned long timerDelay = 10000;
+#pragma region servo
 
-void handle_close() 
-{  
-  String json;
-  StaticJsonDocument<jsonObjectCapacity> doc;
+Servo servo;
+#define CLOSE_ANGLE 0
+#define OPEN_ANGLE 80
+bool isServoOpen;
 
-  servo.closeServo();
+#pragma endregion
 
-  doc["type"] = CHANGESTATETYPE;
-  doc["timestamp"] = "";
-  doc["message"] = "servo was closed";
-  serializeJson(doc, json);
+//Variable for save uptime
+unsigned long startTime;
+unsigned long currentUpTime;
 
-  server.send(200, "application/json", json);
+#pragma endregion
+
+bool isDetectWater(int waterSensor_ADC_value){
+  return waterSensor_ADC_value > 100 ? true : false;
 }
 
-void handle_open() 
-{
-  String json;
-  StaticJsonDocument<jsonObjectCapacity> doc;
+void closeValve(){}
 
-  servo.openServo();
+void openValve(){}
 
-  doc["type"] = CHANGESTATETYPE;
-  doc["timestamp"] = "";
-  doc["message"] = "servo was opened";
-  serializeJson(doc, json);
-
-  server.send(200, "application/json", json);
+void closeServo(){
+  auto currentAngle = servo.read();
+  if(currentAngle != CLOSE_ANGLE){
+    servo.write(CLOSE_ANGLE);
+    isServoOpen = false;
+  }
 }
 
-void handle_sendServoStatus(){
-  String json;
-  StaticJsonDocument<jsonObjectCapacity> doc;
-
-  doc["type"] = GETSTATUSTYPE;
-  doc["timestamp"] = "";
-  doc["message"] = servo.getServoStatus();
-  serializeJson(doc, json);
-  Serial.print(json);
-  server.send(200, "application/json", json);
+void openServo(){
+  auto currentAngle = servo.read();
+  if(currentAngle != OPEN_ANGLE){
+    servo.write(OPEN_ANGLE);
+    isServoOpen = true;
+  }
 }
+
+double GetWaterLevel(int waterSensor_ADC){
+  return ((-1) * ((float)(waterSensor_ADC * 5) / 1024));
+}
+
+#pragma region serverFunction
+void handleClose() {
+  #ifdef IS_SERVO_USE
+    closeServo();
+  #else
+    closeValve();
+  #endif
+
+  server.send(200, "text/plain", "Close");
+}
+
+void handleOpen() {
+  #ifdef IS_SERVO_USE
+    openServo();
+  #else
+    openValve();
+  #endif
+
+  server.send(200, "text/plain", "Open");
+}
+#pragma endregion
 
 void setup() {
   Serial.begin(115200);
+  delay(2000);
+  Serial.println("\n Starting");
 
-  WiFi.begin(ssid, password);
-  Serial.println("Connecting");
-  while(WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.print("Connected to WiFi network with IP Address: ");
-  Serial.println(WiFi.localIP());
-
-  server.on("/close", handle_close);
-  server.on("/open", handle_open);
-  server.on("/getServoStatus", handle_sendServoStatus);
-
-  server.begin();
-
-  randomSeed(analogRead(0));
+  pinMode(button, INPUT);
   
+  #pragma region wifi settings
+  wm.addParameter(&email);
+  wm.addParameter(&api_address);
+  wm.setConfigPortalTimeout(30);
+  bool res = wm.autoConnect("Smarthouse", "11111111");
+  if (!res)
+    Serial.println("Failed to connect or hit timeout");
+  else
+    Serial.println("connected...yeey :)");
+  #pragma endregion
+
+  httpClient = new HttpClient(client, api_address.getValue(), email.getValue());
+  
+  //HTTP server for handle user request
+  server.on("/open", handleOpen);
+  server.on("/close", handleClose);
+  server.begin();
+  Serial.println("HTTP server started");
+
+  servo.attach(D4);
+
+  localIP = WiFi.localIP();  
+  externalIP = httpClient->getExternalIP();
 }
 
-void carbonMonoxideSensorLifetimeCycle(){
-  carbonMonoxideSensor.printCarbonMonoxideStatus();
+// void checkButton() { // TODO:додати закриття відкриття соляноїда
+//   if (digitalRead(button) == LOW) {
+//     delay(50);
+//     if (digitalRead(button) == LOW) {
+//       Serial.println("Button Pressed");
+//       //TODO: add if 1 or doble clicked => close valve
+//       delay(3000);
+//       if (digitalRead(button) == LOW) {
+//         Serial.println("Button Held");
+//         Serial.println("Erasing Config, restarting");
+//         wm.resetSettings();
+//         ESP.restart();
+//       }
 
-  if(carbonMonoxideSensor.isCarbonMonoxideDetected()){
-     Serial.println("Carbon monoxide was Detected!!!");
-     httpClient::sendDetectedMessageToServer("carbonMonoxide");
+//       // start portal w delay
+//       Serial.println("Starting config portal");
+//       wm.setConfigPortalTimeout(120);
+//       wm.addParameter(&email);
+
+//       if (!wm.startConfigPortal("Smarthouse", "11111111")) {
+//         Serial.println("failed to connect or hit timeout");
+//         delay(3000);
+//         ESP.restart();
+//       } else {
+//         Serial.println("connected...yeey :)");
+//       }
+//     }
+//   }
+// }
+
+unsigned long lastButtonPressTime = 0;
+const int doubleClickDelay = 500;
+
+void checkButton() {
+  if (digitalRead(button) == LOW) {
+    delay(50);
+    if (digitalRead(button) == LOW) {
+      unsigned long currentMillis = millis();
+
+      // Перевірка на подвійний натискання
+      if (currentMillis - lastButtonPressTime <= doubleClickDelay) {
+        Serial.println("Double Click Detected");
+        if(isServoOpen){
+          #ifdef IS_SERVO_USE
+            isServoOpen ? closeServo() : openServo();
+          #else
+            isServoOpen ? closeValve() : openValve();
+          #endif
+        }
+      } else {
+        Serial.println("Button Pressed");
+      }
+
+      lastButtonPressTime = currentMillis;
+
+      delay(3000);
+      if (digitalRead(button) == LOW) {
+        Serial.println("Button Held");
+        Serial.println("Erasing Config, restarting");
+        wm.resetSettings();
+        ESP.restart();
+      }
+
+      // start portal w delay
+      Serial.println("Starting config portal");
+      wm.setConfigPortalTimeout(120);
+      wm.addParameter(&email);
+
+      if (!wm.startConfigPortal("Smarthouse", "11111111")) {
+        Serial.println("failed to connect or hit timeout");
+        delay(3000);
+        ESP.restart();
+      } else {
+        Serial.println("connected...yeey :)");
+      }
+    }
   }
-   delay(10000);
 }
 
-void waterSensorLifetimeCycle() 
-{
-  waterSensor.printWaterLevel();
- 
-  if (waterSensor.isWaterDetected()){
-    Serial.println("Water was Detected!!!");
-    httpClient::sendDetectedMessageToServer("water");
+void loop() {
+  currentUpTime = millis();  
+  unsigned long uptimeInSeconds = (currentUpTime - startTime) / 1000;
+
+  checkButton();
+  
+  int waterSensor_ADC_value = analogRead(A0);
+  bool isWaterDetect = isDetectWater(waterSensor_ADC_value);
+  double waterLvl = GetWaterLevel(waterSensor_ADC_value);
+
+  if(isWaterDetect){
+
+    #ifdef IS_SERVO_USE
+      isServoOpen ? closeServo() : openServo();
+    #else
+      isServoOpen ? closeValve() : openValve();
+    #endif
+
+    httpClient->sendDetectedMessage(waterLvl); 
   }
-  delay(10000);
-}
 
-void loop()
-{
-  server.handleClient();
-  waterSensorLifetimeCycle();
-  carbonMonoxideSensorLifetimeCycle();
+  mytime::uptime uptime = mytime::getCurrentUptime(uptimeInSeconds);
+  httpClient->sendState(waterLvl,isServoOpen, &uptime);
+  
+  delay(1000);
 }

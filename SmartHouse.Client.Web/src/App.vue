@@ -1,49 +1,26 @@
 <template>
-  <nav>
-    <div v-if="isUserExist">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/account">Account</router-link> |
-      <router-link to="/settings">Settings</router-link> |
-      <router-link to="/about">About</router-link> |
-      <a @click="logout">Logout</a>
+  <header>
+    <div class="wrapper">
+      <nav>
+        <RouterLink class="item" to="/">Home</RouterLink>
+        <RouterLink class="item" to="/logs">Logs</RouterLink>
+        <RouterLink class="item" to="/settings">Settings</RouterLink>
+      </nav>
     </div>
-    <div v-else>
-      <router-link to="/">Home </router-link> |
-      <router-link to="/sign-in">Sign In </router-link> |
-      <router-link to="/sign-up">Sign Up </router-link>
-    </div>
-  </nav>
-  <router-view />
+  </header>
+  <RouterView />
 </template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
+import { RouterLink, RouterView } from 'vue-router'
 export default defineComponent({
   name: "App",
   components: {},
   data() {
-    return {
-      isUserExist: false,
-    };
+    return {};
   },
 
-  mounted() {
-    this.launchFunction();
-  },
-  methods: {
-    logout() {
-      localStorage.clear();
-      this.$router.push("/");
-      location.reload();
-    },
-
-    launchFunction() {
-      const storedItem = localStorage.getItem("email");
-      if (storedItem) {
-        this.isUserExist = true;
-      }
-    },
-  },
+  methods: {},
 });
 </script>
 
@@ -67,6 +44,24 @@ nav {
     &.router-link-exact-active {
       color: #42b983;
     }
+  }
+  .wrapper{
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+}
+  .item{
+    padding-left: 30px;
+  }
+  .selectedList{
+    margin-right: 25px;
+    display: inline-block;
+    float: right;
   }
 }
 </style>
