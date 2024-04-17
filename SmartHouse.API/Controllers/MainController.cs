@@ -6,11 +6,11 @@ namespace SmartHouse.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class HomeController : Controller
+public class MainController : Controller
 {
     private readonly EmailService _email;
     private readonly ILoggerService _logger;
-    public HomeController(EmailService email, LoggerService logger)
+    public MainController(EmailService email, LoggerService logger)
     {
         _email = email;
         _logger = logger;

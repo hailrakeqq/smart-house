@@ -1,7 +1,3 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using SmartHouse.API;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,9 +18,6 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddLoggerService();
 builder.Services.AddEmailService();
-
-builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseNpgsql(
-    builder.Configuration.GetConnectionString("LocalDefaultConnection")));
 
 var app = builder.Build();
 

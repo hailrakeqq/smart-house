@@ -18,11 +18,6 @@ public interface ILoggerService
 public class LoggerService : ILoggerService
 {
     private const string logs_dir = "/var/log/smarthouseAPI/";
-    private readonly ApplicationDbContext _context;
-    public LoggerService(ApplicationDbContext context)
-    {
-        _context = context;
-    }
 
     List<Log> ILoggerService.GetLogsByDate(string date)
     {

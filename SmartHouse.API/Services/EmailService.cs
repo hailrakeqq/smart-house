@@ -34,14 +34,7 @@ public class EmailService
                 Credentials = new NetworkCredential(_smtpUsername, _smtpPassword)
             })
             {
-                try
-                {
-                    await smtp.SendMailAsync(mail);
-                }
-                catch (Exception ex)
-                {
-                    //TODO: Add logger here
-                }
+                await smtp.SendMailAsync(mail);
             }
         }
     }
