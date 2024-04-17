@@ -17,16 +17,20 @@
 */
 class HttpClient{
     public:
-        HttpClient(WiFiClient wifiClient, String API_URL, String userEmailAddress);
+        HttpClient(WiFiClient wifiClient, String API_URL, String userEmailAddress, IPAddress localIP);
         void sendDetectedMessage(double waterLvl);
         void sendWaterState(double waterLvl);
         void sendState(double waterLvl, bool valveState, struct mytime::uptime* uptime);
         void sendValveState(bool valveState);
         void sendUptime(struct mytime::uptime* uptime);
         String getExternalIP();
+        void setExternalIP(String externalIP);
+        
     private:
         String userEmailAddress;
         String APIAddress;
         WiFiClient wifiClient;
         HTTPClient http;
+        IPAddress localIP;
+        String externalIP;
 };

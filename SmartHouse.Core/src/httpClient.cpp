@@ -1,10 +1,11 @@
 #include "../include/httpClient.h"
 
 
-HttpClient::HttpClient(WiFiClient wifiClient, String APIAddress, String userEmailAddress) : 
+HttpClient::HttpClient(WiFiClient wifiClient, String APIAddress, String userEmailAddress, IPAddress localIP) : 
     wifiClient(wifiClient),
     APIAddress(APIAddress),
-    userEmailAddress(userEmailAddress) {}
+    userEmailAddress(userEmailAddress),
+    localIP(localIP) {}
 
 
 void HttpClient::sendDetectedMessage(double waterLvl) {
@@ -43,7 +44,7 @@ void HttpClient::sendValveState(bool valveState){
 }
 
 void HttpClient::sendState(double waterLvl, bool valveState, struct mytime::uptime* uptime){
-    StaticJsonDocument<128> doc;
+    StaticJsonDocument<512> doc;
     doc["timestamp"] = "";
     doc["logLevel"] = "Info";
     doc["userEmail"] = userEmailAddress;
@@ -54,9 +55,14 @@ void HttpClient::sendState(double waterLvl, bool valveState, struct mytime::upti
     doc["minutes"] = uptime->minutes;
     doc["seconds"] = uptime->seconds;
     doc["uptime"] = uptime->uptimeStr;
-
+    doc["localIP"] = localIP;
+    doc["externalIP"] = externalIP;
+    
     String json;
     serializeJson(doc, json);
+    // Serial.print(json);
+    // Serial.print('\n');
+
     http.begin(wifiClient, APIAddress);
     http.addHeader("Content-Type", "application/json");
     // int httpResponseCode = http.POST(json);
@@ -82,6 +88,10 @@ void HttpClient::sendUptime(struct mytime::uptime* uptime){
     http.POST(json);
 }
 
+void HttpClient::setExternalIP(String externalIP){
+  this->externalIP = externalIP;
+}
+
 String HttpClient::getExternalIP() {
   http.begin(wifiClient, "http://httpbin.org/ip");
 
@@ -92,7 +102,8 @@ String HttpClient::getExternalIP() {
       String payload = http.getString();
       int start = payload.indexOf("\"origin\": \"") + 11; // 11 is the length of "\"origin\": \""
       int end = payload.indexOf("\"", start);
-      return payload.substring(start, end);
+      String result = payload.substring(start, end);
+      return result;
     }
   } else {
     Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());

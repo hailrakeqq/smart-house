@@ -1,6 +1,4 @@
-using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using SmartHouse.API.Enitity;
 using SmartHouse.API.Services;
 
@@ -11,18 +9,39 @@ namespace SmartHouse.API.Controllers;
 public class HomeController : Controller
 {
     private readonly EmailService _email;
-    public HomeController(EmailService email)
+    private readonly ILoggerService _logger;
+    public HomeController(EmailService email, LoggerService logger)
     {
         _email = email;
+        _logger = logger;
     }
 
-    private string timestamp = DateTime.Now.ToString();
+    // [HttpPost] //TODO: перенести на фронтенд (запит + обробку)
+    // [Route("sendstate")]
+    // public async Task<IActionResult> RecieveStateFromMCU([FromBody] RequestBody requestBody)
+    // {
+
+    //     return Ok();
+    // }
 
     [HttpPost]
-    [Route("sendtestsmtp")]
-    public async Task<IActionResult> Test([FromBody] MailModel mailModel)
+    [Route("waterdetect")]
+    public async Task<IActionResult> RecieveWaterDetectMessageFromMCU([FromBody] WaterDetectRequestBody waterDetectRequestBody)
     {
-        await _email.SendEmailAsync(mailModel.ToAddress, mailModel.Subject, mailModel.Body);
+        waterDetectRequestBody.Timestamp = DateTime.Now.ToString("hh:mm:ss tt"); ;
+
+        waterDetectRequestBody.Message += $"\n{waterDetectRequestBody.Timestamp}";
+        await _email.SendEmailAsync(waterDetectRequestBody.UserEmail, "SmartHouse: CRITICAL WATER DETECT", waterDetectRequestBody.Message);
+
+        //LOG 
+        Log log = new Log(waterDetectRequestBody.LogLevel, waterDetectRequestBody.Timestamp, waterDetectRequestBody.Message);
+        String currentDay = DateTime.Now.ToString("dd-MM-yyyy");
+
+        if (!_logger.IsLogForCurrentDayExist(currentDay))
+            _logger.CreateLogFileForCurrentDayAndAddLog(log);
+        else
+            _logger.AddLogToLogFile($"{currentDay}.log", log);
+
         return Ok();
     }
 }

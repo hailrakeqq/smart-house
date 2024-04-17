@@ -68,7 +68,7 @@ void openServo(){
 }
 
 double GetWaterLevel(int waterSensor_ADC){
-  return ((-1) * ((float)(waterSensor_ADC * 5) / 1024));
+  return (float)(waterSensor_ADC * 5) / 1024;
 }
 
 #pragma region serverFunction
@@ -111,7 +111,6 @@ void setup() {
     Serial.println("connected...yeey :)");
   #pragma endregion
 
-  httpClient = new HttpClient(client, api_address.getValue(), email.getValue());
   
   //HTTP server for handle user request
   server.on("/open", handleOpen);
@@ -119,69 +118,23 @@ void setup() {
   server.begin();
   Serial.println("HTTP server started");
 
-  servo.attach(D4);
+  // servo.attach(D4);
 
   localIP = WiFi.localIP();  
+  httpClient = new HttpClient(client, api_address.getValue(), email.getValue(), localIP);
   externalIP = httpClient->getExternalIP();
+  httpClient->setExternalIP(externalIP);
 }
 
-// void checkButton() { // TODO:додати закриття відкриття соляноїда
-//   if (digitalRead(button) == LOW) {
-//     delay(50);
-//     if (digitalRead(button) == LOW) {
-//       Serial.println("Button Pressed");
-//       //TODO: add if 1 or doble clicked => close valve
-//       delay(3000);
-//       if (digitalRead(button) == LOW) {
-//         Serial.println("Button Held");
-//         Serial.println("Erasing Config, restarting");
-//         wm.resetSettings();
-//         ESP.restart();
-//       }
-
-//       // start portal w delay
-//       Serial.println("Starting config portal");
-//       wm.setConfigPortalTimeout(120);
-//       wm.addParameter(&email);
-
-//       if (!wm.startConfigPortal("Smarthouse", "11111111")) {
-//         Serial.println("failed to connect or hit timeout");
-//         delay(3000);
-//         ESP.restart();
-//       } else {
-//         Serial.println("connected...yeey :)");
-//       }
-//     }
-//   }
-// }
-
-unsigned long lastButtonPressTime = 0;
-const int doubleClickDelay = 500;
-
-void checkButton() {
-  if (digitalRead(button) == LOW) {
+//#TODO: FIX
+void checkButton() { // TODO:додати закриття відкриття соляноїда
+  if (digitalRead(button) == HIGH) {
     delay(50);
-    if (digitalRead(button) == LOW) {
-      unsigned long currentMillis = millis();
-
-      // Перевірка на подвійний натискання
-      if (currentMillis - lastButtonPressTime <= doubleClickDelay) {
-        Serial.println("Double Click Detected");
-        if(isServoOpen){
-          #ifdef IS_SERVO_USE
-            isServoOpen ? closeServo() : openServo();
-          #else
-            isServoOpen ? closeValve() : openValve();
-          #endif
-        }
-      } else {
-        Serial.println("Button Pressed");
-      }
-
-      lastButtonPressTime = currentMillis;
-
+    if (digitalRead(button) == HIGH) {
+      Serial.println("Button Pressed");
+      //TODO: add if 1 or doble clicked => close valve
       delay(3000);
-      if (digitalRead(button) == LOW) {
+      if (digitalRead(button) == HIGH) {
         Serial.println("Button Held");
         Serial.println("Erasing Config, restarting");
         wm.resetSettings();
@@ -204,7 +157,53 @@ void checkButton() {
   }
 }
 
+// void checkButton() {
+//   static unsigned long lastDebounceTime = 0;
+//   static unsigned long debounceDelay = 50; // задержка дебаунсинга в миллисекундах
+//   static bool lastButtonState = LOW;
+//   bool buttonState = digitalRead(button);
+
+//   // Проверка состояния кнопки с задержкой для дебаунсинга
+//   if (buttonState != lastButtonState) {
+//     lastDebounceTime = millis();
+//   }
+
+//   if ((millis() - lastDebounceTime) > debounceDelay) {
+//     // Если состояние кнопки изменилось
+//     if (buttonState != lastButtonState) {
+//       lastButtonState = buttonState;
+
+//       if (buttonState == HIGH) {
+//         Serial.println("Button Pressed");
+//         delay(3000); // Задержка для проверки длительного нажатия
+
+//         if (digitalRead(button) == HIGH) {
+//           Serial.println("Button Held");
+//           Serial.println("Erasing Config, restarting");
+//           wm.resetSettings();
+//           ESP.restart();
+//         } else {
+//           // Запуск конфигурационного портала Wi-Fi
+//           Serial.println("Starting config portal");
+//           wm.setConfigPortalTimeout(120);
+//           wm.addParameter(&email);
+
+//           if (!wm.startConfigPortal("Smarthouse", "11111111")) {
+//             Serial.println("failed to connect or hit timeout");
+//             delay(3000);
+//             ESP.restart();
+//           } else {
+//             Serial.println("connected...yeey :)");
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
 void loop() {
+  server.handleClient();
+  
   currentUpTime = millis();  
   unsigned long uptimeInSeconds = (currentUpTime - startTime) / 1000;
 
