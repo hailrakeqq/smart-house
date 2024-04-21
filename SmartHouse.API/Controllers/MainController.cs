@@ -10,7 +10,7 @@ public class MainController : Controller
 {
     private readonly EmailService _email;
     private readonly ILoggerService _logger;
-    public MainController(EmailService email, LoggerService logger)
+    public MainController(EmailService email, ILoggerService logger)
     {
         _email = email;
         _logger = logger;
@@ -29,12 +29,12 @@ public class MainController : Controller
     public async Task<IActionResult> RecieveWaterDetectMessageFromMCU([FromBody] WaterDetectRequestBody waterDetectRequestBody)
     {
         waterDetectRequestBody.Timestamp = DateTime.Now.ToString("hh:mm:ss tt"); ;
-
+        string logMessage = waterDetectRequestBody.Message;
         waterDetectRequestBody.Message += $"\n{waterDetectRequestBody.Timestamp}";
         await _email.SendEmailAsync(waterDetectRequestBody.UserEmail, "SmartHouse: CRITICAL WATER DETECT", waterDetectRequestBody.Message);
 
         //LOG 
-        Log log = new Log(waterDetectRequestBody.LogLevel, waterDetectRequestBody.Timestamp, waterDetectRequestBody.Message);
+        Log log = new Log(waterDetectRequestBody.LogLevel, waterDetectRequestBody.Timestamp, logMessage, waterDetectRequestBody.LocalIP, waterDetectRequestBody.ExternalIP);
         String currentDay = DateTime.Now.ToString("dd-MM-yyyy");
 
         if (!_logger.IsLogForCurrentDayExist(currentDay))

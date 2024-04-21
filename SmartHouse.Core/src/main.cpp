@@ -9,6 +9,7 @@
 #include <Servo.h>
 #include <WiFiClient.h>
 #include <map>
+#include <FS.h> //this needs to be first, or it all crashes and burns...
 #include <WiFiManager.h>
 #include <Servo.h>
 
@@ -16,10 +17,12 @@
 //Comment this string to use solenoid valve
 #define IS_SERVO_USE 1
 
-int button = D6;
+int buttonPin = D6;
 WiFiManager wm;
-WiFiManagerParameter email = WiFiManagerParameter("email", "email", "", 40); 
-WiFiManagerParameter api_address = WiFiManagerParameter("api_address", "api ip dns name address", "", 40); 
+char* defaultEmail = "boklanura@gmail.com";
+char* defaultApiAddress = "http://192.168.0.3:5198";
+WiFiManagerParameter email = WiFiManagerParameter("email", "email", defaultEmail, 64); 
+WiFiManagerParameter api_address = WiFiManagerParameter("api_address", "api ip address or dns name", defaultApiAddress, 64); 
 
 ESP8266WebServer server(80);
 IPAddress localIP;
@@ -40,6 +43,10 @@ bool isServoOpen;
 //Variable for save uptime
 unsigned long startTime;
 unsigned long currentUpTime;
+
+unsigned long uptimeInSeconds = (currentUpTime - startTime) / 1000;
+mytime::uptime uptime = mytime::getCurrentUptime(uptimeInSeconds);
+
 
 #pragma endregion
 
@@ -93,17 +100,24 @@ void handleOpen() {
 }
 #pragma endregion
 
+bool shouldSaveConfig = false;
+
+void saveConfigCallback () {
+  Serial.println("Should save config");
+  shouldSaveConfig = true;
+}
+
 void setup() {
   Serial.begin(115200);
   delay(2000);
-  Serial.println("\n Starting");
+  Serial.println("\nStarting");
 
-  pinMode(button, INPUT);
+  pinMode(buttonPin, INPUT);
   
   #pragma region wifi settings
+  wm.setSaveConfigCallback(saveConfigCallback);
   wm.addParameter(&email);
   wm.addParameter(&api_address);
-  wm.setConfigPortalTimeout(30);
   bool res = wm.autoConnect("Smarthouse", "11111111");
   if (!res)
     Serial.println("Failed to connect or hit timeout");
@@ -111,14 +125,13 @@ void setup() {
     Serial.println("connected...yeey :)");
   #pragma endregion
 
-  
   //HTTP server for handle user request
   server.on("/open", handleOpen);
   server.on("/close", handleClose);
   server.begin();
   Serial.println("HTTP server started");
 
-  // servo.attach(D4);
+  servo.attach(D4);
 
   localIP = WiFi.localIP();  
   httpClient = new HttpClient(client, api_address.getValue(), email.getValue(), localIP);
@@ -126,106 +139,81 @@ void setup() {
   httpClient->setExternalIP(externalIP);
 }
 
-//#TODO: FIX
-void checkButton() { // TODO:додати закриття відкриття соляноїда
-  if (digitalRead(button) == HIGH) {
-    delay(50);
-    if (digitalRead(button) == HIGH) {
-      Serial.println("Button Pressed");
-      //TODO: add if 1 or doble clicked => close valve
-      delay(3000);
-      if (digitalRead(button) == HIGH) {
+enum ButtonState {
+  IDLE,
+  PRESSED,
+  HELD
+};
+
+ButtonState buttonState = IDLE;
+unsigned long buttonPressTime = 0;
+
+void checkButton() {
+  bool buttonPressed = (digitalRead(buttonPin) == LOW);
+
+  switch (buttonState) {
+    case IDLE:
+      if (buttonPressed) {
+        buttonState = PRESSED;
+        buttonPressTime = millis();
+      }
+      break;
+
+    case PRESSED:
+      if (buttonPressed && (millis() - buttonPressTime >= 50)) {
+        buttonState = HELD;
         Serial.println("Button Held");
         Serial.println("Erasing Config, restarting");
         wm.resetSettings();
-        ESP.restart();
-      }
 
-      // start portal w delay
-      Serial.println("Starting config portal");
-      wm.setConfigPortalTimeout(120);
-      wm.addParameter(&email);
+        server.close();
+        if (!wm.startConfigPortal("Smarthouse")) {
+          Serial.println("failed to connect and hit timeout");
+          delay(3000);
+          //reset and try again, or maybe put it to deep sleep
+          ESP.restart();
+          delay(5000);
+        }
 
-      if (!wm.startConfigPortal("Smarthouse", "11111111")) {
-        Serial.println("failed to connect or hit timeout");
-        delay(3000);
-        ESP.restart();
-      } else {
-        Serial.println("connected...yeey :)");
+      } else if (!buttonPressed) {
+        buttonState = IDLE;
       }
-    }
+      break;
+
+    case HELD:
+      if (!buttonPressed) {
+        buttonState = IDLE;
+      }
+      break;
   }
 }
 
-// void checkButton() {
-//   static unsigned long lastDebounceTime = 0;
-//   static unsigned long debounceDelay = 50; // задержка дебаунсинга в миллисекундах
-//   static bool lastButtonState = LOW;
-//   bool buttonState = digitalRead(button);
-
-//   // Проверка состояния кнопки с задержкой для дебаунсинга
-//   if (buttonState != lastButtonState) {
-//     lastDebounceTime = millis();
-//   }
-
-//   if ((millis() - lastDebounceTime) > debounceDelay) {
-//     // Если состояние кнопки изменилось
-//     if (buttonState != lastButtonState) {
-//       lastButtonState = buttonState;
-
-//       if (buttonState == HIGH) {
-//         Serial.println("Button Pressed");
-//         delay(3000); // Задержка для проверки длительного нажатия
-
-//         if (digitalRead(button) == HIGH) {
-//           Serial.println("Button Held");
-//           Serial.println("Erasing Config, restarting");
-//           wm.resetSettings();
-//           ESP.restart();
-//         } else {
-//           // Запуск конфигурационного портала Wi-Fi
-//           Serial.println("Starting config portal");
-//           wm.setConfigPortalTimeout(120);
-//           wm.addParameter(&email);
-
-//           if (!wm.startConfigPortal("Smarthouse", "11111111")) {
-//             Serial.println("failed to connect or hit timeout");
-//             delay(3000);
-//             ESP.restart();
-//           } else {
-//             Serial.println("connected...yeey :)");
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
 
 void loop() {
-  server.handleClient();
-  
-  currentUpTime = millis();  
-  unsigned long uptimeInSeconds = (currentUpTime - startTime) / 1000;
-
   checkButton();
+
+  // server.handleClient();
+  
+  // currentUpTime = millis();  
+  // unsigned long uptimeInSeconds = (currentUpTime - startTime) / 1000;
+  // mytime::uptime uptime = mytime::getCurrentUptime(uptimeInSeconds);
+
   
   int waterSensor_ADC_value = analogRead(A0);
   bool isWaterDetect = isDetectWater(waterSensor_ADC_value);
   double waterLvl = GetWaterLevel(waterSensor_ADC_value);
 
-  if(isWaterDetect){
+      httpClient->sendDetectedMessage(waterLvl); 
+  // if(isWaterDetect){
 
-    #ifdef IS_SERVO_USE
-      isServoOpen ? closeServo() : openServo();
-    #else
-      isServoOpen ? closeValve() : openValve();
-    #endif
+  //   #ifdef IS_SERVO_USE
+  //     isServoOpen ? closeServo() : openServo();
+  //   #else
+  //     isServoOpen ? closeValve() : openValve();
+  //   #endif
 
-    httpClient->sendDetectedMessage(waterLvl); 
-  }
-
-  mytime::uptime uptime = mytime::getCurrentUptime(uptimeInSeconds);
-  httpClient->sendState(waterLvl,isServoOpen, &uptime);
+  //   httpClient->sendDetectedMessage(waterLvl, &uptime); 
+  // }
   
   delay(1000);
 }

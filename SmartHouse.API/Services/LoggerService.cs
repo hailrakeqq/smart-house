@@ -17,7 +17,7 @@ public interface ILoggerService
 
 public class LoggerService : ILoggerService
 {
-    private const string logs_dir = "/var/log/smarthouseAPI/";
+    private const string logs_dir = "logs/";
 
     List<Log> ILoggerService.GetLogsByDate(string date)
     {
@@ -101,10 +101,10 @@ public class LoggerService : ILoggerService
         string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
         string filePath = Path.Combine(logs_dir, $"{currentDate}.log");
 
-        Directory.CreateDirectory(logs_dir);//create log directory if it doesn't exist
+        Directory.CreateDirectory(logs_dir);
 
         using (StreamWriter writer = new StreamWriter(filePath, true)) // 'true' for append mode
-            writer.WriteLine($"\n[{log.Timestamp}] Log Level: {log.LogLevel} | ${log.Id} | Message: {log.Message}\n");
+            writer.WriteLine($"\n[{log.Timestamp}] Log Level: {log.LogLevel} | ${log.Id} | Message: {log.Message} | Local IP: {log.LocalIP} | External IP: {log.ExternalIP}\n");
     }
 
     public bool IsLogForCurrentDayExist(string CurrentDay)
@@ -114,6 +114,6 @@ public class LoggerService : ILoggerService
     public void AddLogToLogFile(string LogFileName, Log log)
     {
         using (StreamWriter writer = new StreamWriter(Path.Combine(logs_dir, LogFileName), true))
-            writer.WriteLine($"\n[{log.Timestamp}] Log Level: {log.LogLevel} | ID ${log.Id} | Message: {log.Message}\n");
+            writer.WriteLine($"\n[{log.Timestamp}] Log Level: {log.LogLevel} | ${log.Id} | Message: {log.Message} | Local IP: {log.LocalIP} | External IP: {log.ExternalIP}\n");
     }
 }

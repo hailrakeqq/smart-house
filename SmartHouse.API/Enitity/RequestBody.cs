@@ -6,4 +6,7 @@ public class WaterDetectRequestBody
     public String LogLevel { get; set; }
     public String UserEmail { get; set; }
     public String Message { get; set; }
+    public String LocalIP { get; set; }
+    public String ExternalIP { get; set; }
+
 }

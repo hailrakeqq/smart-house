@@ -13,18 +13,22 @@ void HttpClient::sendDetectedMessage(double waterLvl) {
     ss << "Water was detected - " << waterLvl;
     std::string message = ss.str();
 
-  
-    StaticJsonDocument<128> doc;
+    StaticJsonDocument<256> doc;
     doc["timestamp"] = "";
     doc["logLevel"] = "Critical";
     doc["userEmail"] = userEmailAddress;
     doc["message"] = message;
+    doc["localIP"] = localIP;
+    doc["externalIP"] = externalIP;
 
     String json;
     serializeJson(doc, json);
-    http.begin(wifiClient, APIAddress);
+       
+    http.begin(wifiClient, APIAddress + "/api/Main/waterdetect");
     http.addHeader("Content-Type", "application/json");
     int httpResponseCode = http.POST(json);
+    Serial.print(httpResponseCode);
+    Serial.print('\n');
     //TODO: add request handler
 }
 
