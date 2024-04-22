@@ -41,16 +41,23 @@ public class LoggerService : ILoggerService
     {
         List<Log> logs = new List<Log>();
 
-        string[] files = Directory.GetFiles(logs_dir);
+        // Получаем путь к директории логов относительно текущей рабочей директории
+        string logs_dir = Path.Combine(Directory.GetCurrentDirectory(), "logs");
 
-        foreach (var file in files)
+        // Проверяем существование директории
+        if (Directory.Exists(logs_dir))
         {
-            string[] lines = File.ReadAllLines(Path.Combine(logs_dir, file));
+            string[] files = Directory.GetFiles(logs_dir);
 
-            foreach (var line in lines)
+            foreach (var file in files)
             {
-                if (!line.IsNullOrEmpty())
-                    logs.Add(Log.GetLogFromString(line));
+                string[] lines = File.ReadAllLines(file);
+
+                foreach (var line in lines)
+                {
+                    if (!string.IsNullOrEmpty(line))
+                        logs.Add(Log.GetLogFromString(line));
+                }
             }
         }
 
