@@ -49,7 +49,6 @@ void HttpClient::sendValveState(bool valveState){
 
 void HttpClient::sendState(double waterLvl, bool valveState, struct mytime::uptime* uptime){
     StaticJsonDocument<512> doc;
-    doc["timestamp"] = "";
     doc["logLevel"] = "Info";
     doc["userEmail"] = userEmailAddress;
     doc["valveState"] = valveState;
@@ -59,6 +58,7 @@ void HttpClient::sendState(double waterLvl, bool valveState, struct mytime::upti
     doc["minutes"] = uptime->minutes;
     doc["seconds"] = uptime->seconds;
     doc["uptime"] = uptime->uptimeStr;
+    doc["pingResult"] = "";
     doc["localIP"] = localIP;
     doc["externalIP"] = externalIP;
     
@@ -69,7 +69,6 @@ void HttpClient::sendState(double waterLvl, bool valveState, struct mytime::upti
 
     http.begin(wifiClient, APIAddress);
     http.addHeader("Content-Type", "application/json");
-    // int httpResponseCode = http.POST(json);
     http.POST(json);
 }
 

@@ -1,3 +1,4 @@
+using System.Net.NetworkInformation;
 using Microsoft.AspNetCore.Mvc;
 using SmartHouse.API.Enitity;
 using SmartHouse.API.Services;
@@ -16,13 +17,26 @@ public class MainController : Controller
         _logger = logger;
     }
 
-    // [HttpPost] //TODO: перенести на фронтенд (запит + обробку)
-    // [Route("sendstate")]
-    // public async Task<IActionResult> RecieveStateFromMCU([FromBody] RequestBody requestBody)
-    // {
+    [HttpPost]
+    [Route("sendstate")]
+    public async Task<IActionResult> RecieveStateFromMCU([FromBody] State state)
+    {
 
-    //     return Ok();
-    // }
+        string pingResult = Toolchain.ExecutePingCommand("8.8.8.8");
+        // 3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+        // if(pingResult.Split(',')[2] == "0")//TODO:дописати if packet lost > 0% send message to mail
+        state.PingResult = pingResult;
+        return Ok(state);
+    }
+
+    [HttpPost]
+    [Route("sendinitialrequest")]
+    public IActionResult GetInitialIPAddress([FromBody] IP ip)
+    {
+        DeviceIPStorage.ExternalIP = ip.ExternalIP;
+        DeviceIPStorage.InternalIP = ip.InternalIP;
+        return Ok();
+    }
 
     [HttpPost]
     [Route("waterdetect")]
