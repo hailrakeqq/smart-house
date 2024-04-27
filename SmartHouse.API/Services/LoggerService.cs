@@ -10,9 +10,10 @@ public interface ILoggerService
     List<Log> GetAllLogs();
     Log GetLogById(String Id);
     Log GetLogById(String logName, String Id);
-    void CreateLogFileForCurrentDayAndAddLog(Log log);
-    void AddLogToLogFile(String LogFileName, Log log);
-    bool IsLogForCurrentDayExist(String CurrentDay);
+    // void CreateLogFileForCurrentDayAndAddLog(Log log);
+    // void AddLogToLogFile(string logfilename, Log log);
+    void AddLog(Log log);
+    bool IsLogForCurrentDayExist();
 }
 
 public class LoggerService : ILoggerService
@@ -103,7 +104,7 @@ public class LoggerService : ILoggerService
         return null;
     }
 
-    void ILoggerService.CreateLogFileForCurrentDayAndAddLog(Log log)
+    private void CreateLogFileForCurrentDayAndAddLog(Log log)
     {
         string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
         string filePath = Path.Combine(logs_dir, $"{currentDate}.log");
@@ -114,13 +115,23 @@ public class LoggerService : ILoggerService
             writer.WriteLine($"\n[{log.Timestamp}] Log Level: {log.LogLevel} | ${log.Id} | Message: {log.Message} | Local IP: {log.LocalIP} | External IP: {log.ExternalIP}\n");
     }
 
-    public bool IsLogForCurrentDayExist(string CurrentDay)
-        => File.Exists(Path.Combine(logs_dir, CurrentDay));
+    public bool IsLogForCurrentDayExist()
+    {
+        string CurrentDay = DateTime.Now.ToString("yyyy-MM-dd");
+        return File.Exists(Path.Combine(logs_dir, CurrentDay));
+    }
 
-
-    public void AddLogToLogFile(string LogFileName, Log log)
+    private void AddLogToLogFile(string LogFileName, Log log)
     {
         using (StreamWriter writer = new StreamWriter(Path.Combine(logs_dir, LogFileName), true))
             writer.WriteLine($"\n[{log.Timestamp}] Log Level: {log.LogLevel} | ${log.Id} | Message: {log.Message} | Local IP: {log.LocalIP} | External IP: {log.ExternalIP}\n");
+    }
+
+    void ILoggerService.AddLog(Log log)
+    {
+        if (IsLogForCurrentDayExist())
+            AddLogToLogFile($"{DateTime.Now.ToString("yyyy-MM-dd")}.log", log);
+        else
+            CreateLogFileForCurrentDayAndAddLog(log);
     }
 }

@@ -13,14 +13,48 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { RouterLink, RouterView } from 'vue-router'
+import axios from "axios";
 export default defineComponent({
   name: "App",
   components: {},
-  data() {
-    return {};
+  data(){
+    return{
+      intervalId: 0,
+      request_frequency: 90,
+      pingResult: null as number | null,
+      uptime: ""
+    }
   },
-
-  methods: {},
+  created() {
+    const frequencyString = localStorage.getItem("request_frequency");
+    if (frequencyString !== null){ 
+      this.request_frequency = parseInt(frequencyString as string, 10);
+    } else {
+      this.request_frequency = parseInt(prompt("Enter request frequency (90 seconds by default)", "90") || "90", 10);
+      localStorage.setItem("request_frequency", this.request_frequency.toString());
+    }
+    this.getDeviceState();
+    this.startInterval();
+  },
+  unmounted() {
+    clearInterval(this.intervalId);
+  },
+  methods:{
+    async getDeviceState() {   
+      try {        
+        await axios.get("/api/Main/getstatemoq").then(response => {
+          localStorage.setItem('monitoringData', JSON.stringify(response.data));
+        })
+      } catch (error) {
+        console.error('Error pinging the server:', error);
+      }
+    },
+    startInterval() {
+      this.intervalId = setInterval(() => {
+        this.getDeviceState();
+      }, this.request_frequency * 1000);
+    },
+  }, 
 });
 </script>
 

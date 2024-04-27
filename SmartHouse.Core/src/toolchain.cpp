@@ -34,3 +34,24 @@ String toolchain::createJSON(StaticJsonDocument<128> doc){
 
     return json;
 }
+
+String toolchain::getState(double waterLvl, bool valveState, mytime::uptime* uptime, String userEmailAddress, String localIP, String externalIP){
+    StaticJsonDocument<512> doc;
+    doc["logLevel"] = "Info";
+    doc["userEmail"] = userEmailAddress;
+    doc["valveState"] = valveState;
+    doc["waterLevel"] = waterLvl;
+    doc["days"] = uptime->days;
+    doc["hours"] = uptime->hours;
+    doc["minutes"] = uptime->minutes;
+    doc["seconds"] = uptime->seconds;
+    doc["uptime"] = uptime->uptimeStr;
+    doc["pingResult"] = "";
+    doc["localIP"] = localIP;
+    doc["externalIP"] = externalIP;
+
+    String json;
+    serializeJson(doc, json);
+
+    return json;
+}

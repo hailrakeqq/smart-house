@@ -47,6 +47,11 @@ unsigned long currentUpTime;
 unsigned long uptimeInSeconds = (currentUpTime - startTime) / 1000;
 mytime::uptime uptime = mytime::getCurrentUptime(uptimeInSeconds);
 
+  
+int waterSensor_ADC_value;
+bool isWaterDetect;
+double waterLvl;
+
 
 #pragma endregion
 
@@ -98,6 +103,12 @@ void handleOpen() {
 
   server.send(200, "text/plain", "Open");
 }
+
+void handleGetState() { //TODO: test
+  String response = toolchain::getState(waterLvl, isServoOpen, &uptime, defaultEmail, localIP.toString(), externalIP);
+  server.send(200, "application/json", response);
+}
+
 #pragma endregion
 
 bool shouldSaveConfig = false;
@@ -127,6 +138,7 @@ void setup() {
 
   //HTTP server for handle user request
   server.on("/open", handleOpen);
+  server.on("/getState", HTTP_GET, handleGetState);
   server.on("/close", handleClose);
   server.begin();
   Serial.println("HTTP server started");
@@ -192,28 +204,27 @@ void checkButton() {
 void loop() {
   checkButton();
 
-  // server.handleClient();
+  server.handleClient();
   
-  // currentUpTime = millis();  
-  // unsigned long uptimeInSeconds = (currentUpTime - startTime) / 1000;
-  // mytime::uptime uptime = mytime::getCurrentUptime(uptimeInSeconds);
+  currentUpTime = millis();  
+  uptimeInSeconds = (currentUpTime - startTime) / 1000;
+  uptime = mytime::getCurrentUptime(uptimeInSeconds);
 
   
-  int waterSensor_ADC_value = analogRead(A0);
-  bool isWaterDetect = isDetectWater(waterSensor_ADC_value);
-  double waterLvl = GetWaterLevel(waterSensor_ADC_value);
+  waterSensor_ADC_value = analogRead(A0);
+  isWaterDetect = isDetectWater(waterSensor_ADC_value);
+  waterLvl = GetWaterLevel(waterSensor_ADC_value);
 
-      httpClient->sendDetectedMessage(waterLvl); 
-  // if(isWaterDetect){
+  if(isWaterDetect){
 
-  //   #ifdef IS_SERVO_USE
-  //     isServoOpen ? closeServo() : openServo();
-  //   #else
-  //     isServoOpen ? closeValve() : openValve();
-  //   #endif
+    #ifdef IS_SERVO_USE
+      isServoOpen ? closeServo() : openServo();
+    #else
+      isServoOpen ? closeValve() : openValve();
+    #endif
 
-  //   httpClient->sendDetectedMessage(waterLvl, &uptime); 
-  // }
+    httpClient->sendDetectedMessage(waterLvl); 
+  }
   
   delay(1000);
 }
