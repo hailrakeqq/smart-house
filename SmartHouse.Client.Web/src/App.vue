@@ -42,7 +42,7 @@ export default defineComponent({
   methods:{
     async getDeviceState() {   
       try {        
-        await axios.get("/api/Main/getstatemoq").then(response => {
+        await axios.get("/api/Main/getstate").then(response => {
           localStorage.setItem('monitoringData', JSON.stringify(response.data));
         })
       } catch (error) {

@@ -32,6 +32,20 @@ void HttpClient::sendDetectedMessage(double waterLvl) {
     //TODO: add request handler
 }
 
+void HttpClient::sendDeviceIPToAPI(String localIP, String externalIP){
+    StaticJsonDocument<256> doc;
+    doc["internalIP"] = localIP;
+    doc["externalIP"] = externalIP;
+
+    String json;
+    serializeJson(doc,json);
+
+    http.begin(wifiClient, APIAddress + "/api/Main/senddeviceip");
+    http.addHeader("Content-Type", "application/json");
+    int respone = http.POST(json);
+    Serial.println(respone);
+}
+
 void HttpClient::sendValveState(bool valveState){
     StaticJsonDocument<128> doc;
     doc["timestamp"] = "";

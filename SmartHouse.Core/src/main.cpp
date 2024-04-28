@@ -149,6 +149,8 @@ void setup() {
   httpClient = new HttpClient(client, api_address.getValue(), email.getValue(), localIP);
   externalIP = httpClient->getExternalIP();
   httpClient->setExternalIP(externalIP);
+
+  httpClient->sendDeviceIPToAPI(localIP.toString(), externalIP);
 }
 
 enum ButtonState {

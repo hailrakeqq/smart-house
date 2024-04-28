@@ -3,6 +3,7 @@ using System.Net.NetworkInformation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SmartHouse.API.Enitity;
 using SmartHouse.API.Services;
 
@@ -59,15 +60,31 @@ public class MainController : Controller
     {
         State state;
         string Timestamp = DateTime.Now.ToString("ddd MMM dd HH:mm:ss yyyy");
-        string pingResult = Toolchain.ExecutePingCommand(DeviceIPStorage.ExternalIP);
+        string pingResult = Toolchain.ExecutePingCommand(DeviceIPStorage.InternalIP);
         var packetLoss = int.Parse(pingResult.Split(',')[2].Split('%')[0].Trim());
         using (var httpClient = new HttpClient())
         {
 
-            var response = await httpClient.GetAsync($"http://{DeviceIPStorage.ExternalIP}:80/getState");
+            var response = await httpClient.GetAsync($"http://{DeviceIPStorage.InternalIP}:80/getState");
             string jsonResponse = await response.Content.ReadAsStringAsync();
-            state = (State)JsonConvert.DeserializeObject(jsonResponse);
 
+            JObject jsonObject = JsonConvert.DeserializeObject<JObject>(jsonResponse);
+
+            state = new State
+            {
+                LogLevel = (string)jsonObject["logLevel"],
+                UserEmail = (string)jsonObject["userEmail"],
+                ValveState = (string)jsonObject["valveState"],
+                WaterLevel = (string)jsonObject["waterLevel"],
+                Days = (string)jsonObject["days"],
+                Hours = (string)jsonObject["hours"],
+                Minutes = (string)jsonObject["minutes"],
+                Seconds = (string)jsonObject["seconds"],
+                Uptime = (string)jsonObject["uptime"],
+                PingResult = pingResult,
+                LocalIP = (string)jsonObject["localIP"],
+                ExternalIP = (string)jsonObject["externalIP"]
+            };
             if (!response.IsSuccessStatusCode)
             {
                 return BadRequest();
@@ -89,7 +106,7 @@ public class MainController : Controller
     }
 
     [HttpPost]
-    [Route("sendinitialrequest")]
+    [Route("senddeviceip")]
     public IActionResult GetInitialIPAddress([FromBody] IP ip)
     {
         DeviceIPStorage.ExternalIP = ip.ExternalIP;
@@ -101,9 +118,10 @@ public class MainController : Controller
     [Route("waterdetect")]
     public async Task<IActionResult> RecieveWaterDetectMessageFromMCU([FromBody] WaterDetectRequestBody waterDetectRequestBody)
     {
-        waterDetectRequestBody.Timestamp = DateTime.Now.ToString("hh:mm:ss tt"); ;
+        waterDetectRequestBody.Timestamp = DateTime.Now.ToString("hh:mm:ss tt");
+        string Timestamp = DateTime.Now.ToString("ddd MMM dd HH:mm:ss yyyy");
         string logMessage = waterDetectRequestBody.Message;
-        waterDetectRequestBody.Message += $"\n{waterDetectRequestBody.Timestamp}";
+        waterDetectRequestBody.Message += $"\n{Timestamp}";
         await _email.SendEmailAsync(waterDetectRequestBody.UserEmail, "SmartHouse: CRITICAL WATER DETECT", waterDetectRequestBody.Message);
 
         _logger.AddLog(new Log(waterDetectRequestBody.LogLevel, waterDetectRequestBody.Timestamp, logMessage, waterDetectRequestBody.LocalIP, waterDetectRequestBody.ExternalIP));

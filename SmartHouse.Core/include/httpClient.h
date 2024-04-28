@@ -25,6 +25,8 @@ class HttpClient{
         void sendUptime(struct mytime::uptime* uptime);
         String getExternalIP();
         void setExternalIP(String externalIP);
+        void sendDeviceIPToAPI(String localIP, String externalIP);
+
         
     private:
         String userEmailAddress;
