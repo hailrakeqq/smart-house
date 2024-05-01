@@ -45,6 +45,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import CustomButton from "../components/UI/CustomButton.vue";
+import axios from "axios";
 
 interface DeviceState {
   logLevel: string;
@@ -70,15 +71,15 @@ export default defineComponent({
     this.updateData();
   },
   methods: {
-
-    //TODO: add request handler
-    openRequest(){
-      console.log("open");
-      
+    async openRequest(){
+      await axios.post(`${this.deviceState.externalIP}:80/open`).then(result =>{
+        alert(result.data)
+      });
     },
-    closeRequest(){
-      console.log("close");
-      
+    async closeRequest(){
+      await axios.post(`${this.deviceState.externalIP}:80/close`).then(result =>{
+        alert(result.data)
+      });
     },
 
     updateData(){

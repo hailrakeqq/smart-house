@@ -1,55 +1,72 @@
 <template>
-    <div class="home">
-      <h1>Logs</h1>
-      <div class="logs-container">
-      <div
-        class="log-item"
-        v-for="log in logs"
-        v-bind:key="log.id">
-        <p><strong>ID:</strong> {{log.id}}</p>
-        <p><strong>Log Level:</strong> {{log.logLevel}}</p>
-        <p><strong>Message:</strong> {{log.message}}</p>
-        <p><strong>Timestamp:</strong> {{log.timestamp}}</p>
-        <p><strong>Local IP:</strong> {{log.localIP}}</p>
-        <p><strong>External IP:</strong> {{log.externalIP}}</p>
+  <div class="home">
+    <h1>Logs</h1>
+    <div class="sort-section">
+      <input type="text" v-model="searchTerm" placeholder="Enter ID">
+    </div>
+    <div class="logs-container" v-if="searchTerm !== '' && searchTerm !== undefined">
+      <div class="log-item" v-for="log in filteredLogs" :key="log.id">
+        <p><strong>ID:</strong> {{ log.id }}</p>
+        <p><strong>Log Level:</strong> {{ log.logLevel }}</p>
+        <p><strong>Message:</strong> {{ log.message }}</p>
+        <p><strong>Timestamp:</strong> {{ log.timestamp }}</p>
+        <p><strong>Local IP:</strong> {{ log.localIP }}</p>
+        <p><strong>External IP:</strong> {{ log.externalIP }}</p>
       </div>
     </div>
-   
+    <div class="logs-container" v-else>
+      <div class="log-item" v-for="log in logs" :key="log.id">
+        <p><strong>ID:</strong> {{ log.id }}</p>
+        <p><strong>Log Level:</strong> {{ log.logLevel }}</p>
+        <p><strong>Message:</strong> {{ log.message }}</p>
+        <p><strong>Timestamp:</strong> {{ log.timestamp }}</p>
+        <p><strong>Local IP:</strong> {{ log.localIP }}</p>
+        <p><strong>External IP:</strong> {{ log.externalIP }}</p>
+      </div>
     </div>
-  </template>
-  
-  <script lang="ts">
-  import { defineComponent } from "vue";
-  import {Log} from "../Log"
-  import axios from "axios";
-  export default defineComponent({
-    name: "LogsView",
-    components: {},
-    data(){
-      return{
-        logs: [] as Log[],
+  </div>
+</template>
+
+<script>
+import { defineComponent } from "vue";
+import { Log } from "../Log";
+import axios from "axios";
+
+export default defineComponent({//TODO: fix log level
+  name: "LogsView",
+  components: {},
+  data() {
+    return {
+      searchTerm: '',
+      logs: []
+    }
+  },
+
+  methods: {
+    async getLogs() {
+      try {
+        const response = await axios.get("/api/Log/getlogs");
+        return response.data;  
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        return []; 
       }
     },
+  },
 
-    methods:{
-      async getLogs() {
-        try {
-          const response = await axios.get("/api/Log/getlogs");
-          console.log("Response data:", response.data);
-          return response.data;  
-        } catch (error) {
-          console.error('Error fetching data:', error);
-          return []; 
-        }
-      }
-    },
-
-    async mounted() {
-      this.logs = await this.getLogs()
-    },
-
+  async mounted() {
+    this.logs = await this.getLogs();
+  },
+  computed: {
+    filteredLogs: function() {
+      return this.logs.filter(item => {
+        return item.id.toString().includes(this.searchTerm)
+      });
+    }
+  }
   });
-  </script>
+</script>
+
 
 <style>
 .home {
@@ -94,4 +111,16 @@ p {
   font-weight: bold;
   margin-right: 5px;
 }
+
+.sort-section {
+  margin-bottom: 20px; 
+  display: flex;
+  align-items: center;
+}
+
+.sort-section p {
+  margin-right: 10px; 
+}
+
+
 </style>

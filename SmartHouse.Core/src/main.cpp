@@ -137,9 +137,9 @@ void setup() {
   #pragma endregion
 
   //HTTP server for handle user request
-  server.on("/open", handleOpen);
+  server.on("/open", HTTP_POST, handleOpen);
+  server.on("/close", HTTP_POST, handleClose);
   server.on("/getState", HTTP_GET, handleGetState);
-  server.on("/close", handleClose);
   server.begin();
   Serial.println("HTTP server started");
 
