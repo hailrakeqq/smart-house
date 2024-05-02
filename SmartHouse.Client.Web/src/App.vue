@@ -63,10 +63,25 @@ export default defineComponent({
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
+  text-align:center;
+  line-height: 2.0;
+  word-spacing: 5px;
+  letter-spacing:2.5px;
+  font-size:18px;
 }
+.contect_block{
+  text-align:left;
+}
+.label{
+  font-weight:bold;
 
+}
+.btn{
+    position:absolute;
+    top:430px;
+    left:150px;
+}
 nav {
   padding: 30px;
 

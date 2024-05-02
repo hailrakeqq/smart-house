@@ -1,17 +1,17 @@
 <template>
   <div class="home">
-    <h1>Main page</h1>
-    <div id="monitoringWindow">
-      <div class="monitoring-item">
-        <span class="label">Log Level: </span>
-        <span class="value">{{ deviceState.logLevel }}</span>
-      </div>
-      <div class="monitoring-item">
-        <span class="label">User Email: </span>
-        <span class="value">{{ deviceState.userEmail }}</span>
-      </div>
-      <div class="monitoring-item">
-        <span class="label">Valve State: </span>
+    <div class="contect_block">
+      <div id="monitoringWindow">
+        <div class="monitoring-item">
+          <span class="label">Log Level: </span>
+          <span class="value">{{ deviceState.logLevel }}</span>
+        </div>
+        <div class="monitoring-item">
+          <span class="label">User Email: </span>
+          <span class="value">{{ deviceState.userEmail }}</span>
+        </div>
+        <div class="monitoring-item">
+          <span class="label">Valve State: </span>
         <span class="value" v-if="deviceState.valveState == 'True'">Open</span>
         <span class="value" v-if="deviceState.valveState == 'False'">Close</span>
       </div>
@@ -35,10 +35,12 @@
         <span class="label">External IP: </span>
         <span class="value">{{ deviceState.externalIP }}</span>
       </div>
+          <div class="btn">
+                <CustomButton @click="openRequest" v-if="deviceState.valveState == 'True'">Close Valve</CustomButton>
+               <CustomButton @click="closeRequest" v-if="deviceState.valveState == 'False'">Open Valve</CustomButton>
+          </div>
     </div>
-    
-    <CustomButton @click="openRequest" v-if="deviceState.valveState == 'True'">Close Valve</CustomButton>
-    <CustomButton @click="closeRequest" v-if="deviceState.valveState == 'False'">Open Valve</CustomButton>
+    </div>
   </div>
 </template>
 
