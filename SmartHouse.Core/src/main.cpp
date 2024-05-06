@@ -9,13 +9,16 @@
 #include <Servo.h>
 #include <WiFiClient.h>
 #include <map>
-#include <FS.h> //this needs to be first, or it all crashes and burns...
+#include <FS.h>
 #include <WiFiManager.h>
 #include <Servo.h>
 
 #pragma region setting_up
-//Comment this string to use solenoid valve
+//Comment this define to use solenoid valve
 #define IS_SERVO_USE 1
+
+#define SERVO_DELAY 100
+#define ANGLE_THRESHOLD 2
 
 int buttonPin = D6;
 WiFiManager wm;
@@ -35,8 +38,8 @@ HttpClient* httpClient;
 
 Servo servo;
 #define CLOSE_ANGLE 0
-#define OPEN_ANGLE 80
-bool isServoOpen;
+#define OPEN_ANGLE 70
+bool isServoOpen = true;
 
 #pragma endregion
 
@@ -63,19 +66,31 @@ void closeValve(){}
 
 void openValve(){}
 
-void closeServo(){
-  auto currentAngle = servo.read();
-  if(currentAngle != CLOSE_ANGLE){
+void closeServo() {
+  if (isServoOpen) {
     servo.write(CLOSE_ANGLE);
+    delay(SERVO_DELAY);
+    auto currentAngle = servo.read();
+    while (abs(currentAngle - CLOSE_ANGLE) > ANGLE_THRESHOLD) {
+      delay(10);
+      currentAngle = servo.read(); 
+    }
     isServoOpen = false;
+    Serial.println("Servo was closed");
   }
 }
 
-void openServo(){
-  auto currentAngle = servo.read();
-  if(currentAngle != OPEN_ANGLE){
+void openServo() {
+  if (!isServoOpen) {
     servo.write(OPEN_ANGLE);
+    delay(SERVO_DELAY);
+    auto currentAngle = servo.read();
+    while (abs(currentAngle - OPEN_ANGLE) > ANGLE_THRESHOLD) {
+      delay(10);
+      currentAngle = servo.read(); 
+    }
     isServoOpen = true;
+    Serial.println("Servo was opened");
   }
 }
 
@@ -104,7 +119,7 @@ void handleOpen() {
   server.send(200, "text/plain", "Open");
 }
 
-void handleGetState() { //TODO: test
+void handleGetState() {
   String response = toolchain::getState(waterLvl, isServoOpen, &uptime, defaultEmail, localIP.toString(), externalIP);
   server.send(200, "application/json", response);
 }
@@ -144,13 +159,14 @@ void setup() {
   Serial.println("HTTP server started");
 
   servo.attach(D4);
+  openServo();
 
   localIP = WiFi.localIP();  
   httpClient = new HttpClient(client, api_address.getValue(), email.getValue(), localIP);
   externalIP = httpClient->getExternalIP();
   httpClient->setExternalIP(externalIP);
 
-  httpClient->sendDeviceIPToAPI(localIP.toString(), externalIP);
+  httpClient->sendDeviceIPToAPI(localIP.toString(), externalIP, defaultEmail);
 }
 
 enum ButtonState {
@@ -218,15 +234,17 @@ void loop() {
   waterLvl = GetWaterLevel(waterSensor_ADC_value);
 
   if(isWaterDetect){
+    Serial.print("WaterDetect\n");
 
     #ifdef IS_SERVO_USE
-      isServoOpen ? closeServo() : openServo();
+      if(isServoOpen)
+        closeServo();
     #else
-      isServoOpen ? closeValve() : openValve();
+      if(isServoOpen)
+        closeValve();
     #endif
 
     httpClient->sendDetectedMessage(waterLvl); 
   }
-  
   delay(1000);
 }

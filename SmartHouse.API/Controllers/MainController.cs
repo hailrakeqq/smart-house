@@ -58,14 +58,27 @@ public class MainController : Controller
     [Route("getstate")]
     public async Task<IActionResult> RecieveStateFromMCU()
     {
-        State state;
+        State state = null;
+
         string Timestamp = DateTime.Now.ToString("ddd MMM dd HH:mm:ss yyyy");
-        string pingResult = Toolchain.ExecutePingCommand(DeviceIPStorage.InternalIP);
-        var packetLoss = int.Parse(pingResult.Split(',')[2].Split('%')[0].Trim());
+        string pingResult = Toolchain.ExecutePingCommand(Storage.InternalIP);
+        var packetLoss = Toolchain.ExtractPacketLossPercentage(pingResult);
+        if (packetLoss > 0)
+        {
+            string lvl = packetLoss == 100 ? "Critical" : "Warning";
+            string subject = $"** {lvl} - {(lvl == "Critical" ? "Host is DOWN" : "Host have packet loss")}**";
+            string message = $"Host: Local IP - {Storage.InternalIP}\tExternal IP - {Storage.ExternalIP}\nState: {(lvl == "Critical" ? "Down" : "UP")}\nInfo: {pingResult}\n{Timestamp}";
+
+            // Отправка электронного письма
+            await _email.SendEmailAsync(Storage.UserEmail, subject, message);
+
+            // Журналирование
+            _logger.AddLog(new Log(lvl, Timestamp, pingResult, Storage.InternalIP, Storage.ExternalIP));
+        }
+
         using (var httpClient = new HttpClient())
         {
-
-            var response = await httpClient.GetAsync($"http://{DeviceIPStorage.InternalIP}:80/getState");
+            var response = await httpClient.GetAsync($"http://{Storage.InternalIP}:80/getState");
             string jsonResponse = await response.Content.ReadAsStringAsync();
 
             JObject jsonObject = JsonConvert.DeserializeObject<JObject>(jsonResponse);
@@ -85,21 +98,6 @@ public class MainController : Controller
                 LocalIP = (string)jsonObject["localIP"],
                 ExternalIP = (string)jsonObject["externalIP"]
             };
-            if (!response.IsSuccessStatusCode)
-            {
-                return BadRequest();
-            }
-        }
-
-        if (packetLoss > 0)
-        {
-            string lvl = packetLoss == 100 ? "Critical" : "Warning";
-            string subject = $"** {lvl} - {(lvl == "Critical" ? "Host is DOWN" : "Host have packet loss")}**";
-            string message = $"Host: Local IP - {state.LocalIP}\tExternal IP - {state.ExternalIP}\nState: {(lvl == "Critical" ? "Down" : "UP")}\nInfo: {pingResult}\n{Timestamp}";
-
-            await _email.SendEmailAsync(state.UserEmail, subject, message);
-
-            _logger.AddLog(new Log(lvl, Timestamp, pingResult, state.LocalIP, state.ExternalIP));
         }
 
         return Ok(state);
@@ -107,10 +105,11 @@ public class MainController : Controller
 
     [HttpPost]
     [Route("senddeviceip")]
-    public IActionResult GetInitialIPAddress([FromBody] IP ip)
+    public IActionResult GetInitialIPAddress([FromBody] InitialData initialData)
     {
-        DeviceIPStorage.ExternalIP = ip.ExternalIP;
-        DeviceIPStorage.InternalIP = ip.InternalIP;
+        Storage.ExternalIP = initialData.ExternalIP;
+        Storage.InternalIP = initialData.InternalIP;
+        Storage.UserEmail = initialData.UserEmail;
         return Ok();
     }
 

@@ -28,7 +28,30 @@ public static class Toolchain
 
             process.WaitForExit();
 
-            return output.ToString().Split('\n')[7];
+            var lines = output.ToString().Split('\n');
+            foreach (var line in lines)
+            {
+                if (line.Contains("packets transmitted"))
+                    return line.Trim();
+            }
+
+            return "Information not found";
         }
+    }
+
+    public static int ExtractPacketLossPercentage(string pingOutput)
+    {
+        var parts = pingOutput.Split(' ');
+
+        foreach (var part in parts)
+        {
+            if (part.Contains("%"))
+            {
+                var percentageString = part.Trim('%');
+                return int.TryParse(percentageString, out int percentage) ? percentage : 404;
+            }
+        }
+
+        return 404;
     }
 }

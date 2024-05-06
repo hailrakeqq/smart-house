@@ -10,7 +10,7 @@ HttpClient::HttpClient(WiFiClient wifiClient, String APIAddress, String userEmai
 
 void HttpClient::sendDetectedMessage(double waterLvl) {
     std::stringstream ss;
-    ss << "Water was detected - " << waterLvl;
+    ss << "Water was detected - " << waterLvl << " cm";
     std::string message = ss.str();
 
     StaticJsonDocument<256> doc;
@@ -29,13 +29,13 @@ void HttpClient::sendDetectedMessage(double waterLvl) {
     int httpResponseCode = http.POST(json);
     Serial.print(httpResponseCode);
     Serial.print('\n');
-    //TODO: add request handler
 }
 
-void HttpClient::sendDeviceIPToAPI(String localIP, String externalIP){
+void HttpClient::sendDeviceIPToAPI(String localIP, String externalIP, String userEmail){
     StaticJsonDocument<256> doc;
     doc["internalIP"] = localIP;
     doc["externalIP"] = externalIP;
+    doc["userEmail"] = userEmail;
 
     String json;
     serializeJson(doc,json);
@@ -117,7 +117,7 @@ String HttpClient::getExternalIP() {
   if (httpCode > 0) {
     if (httpCode == HTTP_CODE_OK) {
       String payload = http.getString();
-      int start = payload.indexOf("\"origin\": \"") + 11; // 11 is the length of "\"origin\": \""
+      int start = payload.indexOf("\"origin\": \"") + 11;
       int end = payload.indexOf("\"", start);
       String result = payload.substring(start, end);
       return result;

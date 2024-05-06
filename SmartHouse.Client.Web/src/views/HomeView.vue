@@ -17,7 +17,7 @@
       </div>
       <div class="monitoring-item">
         <span class="label">Water Level: </span>
-        <span class="value">{{ deviceState.waterLevel }}</span>
+        <span class="value">{{ deviceState.waterLevel }} cm</span>
       </div>
       <div class="monitoring-item">
         <span class="label">Uptime: </span>
@@ -74,12 +74,12 @@ export default defineComponent({
   },
   methods: {
     async openRequest(){
-      await axios.post(`${this.deviceState.externalIP}:80/open`).then(result =>{
+      await axios.post(`${this.deviceState.localIP}:80/open`).then(result =>{
         alert(result.data)
       });
     },
     async closeRequest(){
-      await axios.post(`${this.deviceState.externalIP}:80/close`).then(result =>{
+      await axios.post(`${this.deviceState.localIP}:80/close`).then(result =>{
         alert(result.data)
       });
     },
