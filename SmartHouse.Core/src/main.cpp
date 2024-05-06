@@ -38,7 +38,7 @@ HttpClient* httpClient;
 
 Servo servo;
 #define CLOSE_ANGLE 0
-#define OPEN_ANGLE 70
+#define OPEN_ANGLE 60
 bool isServoOpen = true;
 
 #pragma endregion
@@ -106,6 +106,7 @@ void handleClose() {
     closeValve();
   #endif
 
+  server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(200, "text/plain", "Close");
 }
 
@@ -115,7 +116,8 @@ void handleOpen() {
   #else
     openValve();
   #endif
-
+  
+  server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(200, "text/plain", "Open");
 }
 

@@ -36,8 +36,8 @@
         <span class="value">{{ deviceState.externalIP }}</span>
       </div>
           <div class="btn">
-                <CustomButton @click="openRequest" v-if="deviceState.valveState == 'True'">Close Valve</CustomButton>
-               <CustomButton @click="closeRequest" v-if="deviceState.valveState == 'False'">Open Valve</CustomButton>
+                <CustomButton @click="closeRequest" v-if="deviceState.valveState == 'True'">Close Valve</CustomButton>
+               <CustomButton @click="openRequest" v-if="deviceState.valveState == 'False'">Open Valve</CustomButton>
           </div>
     </div>
     </div>
@@ -74,12 +74,12 @@ export default defineComponent({
   },
   methods: {
     async openRequest(){
-      await axios.post(`${this.deviceState.localIP}:80/open`).then(result =>{
+      await axios.post(`http://${this.deviceState.localIP}:80/open`).then(result =>{
         alert(result.data)
       });
     },
     async closeRequest(){
-      await axios.post(`${this.deviceState.localIP}:80/close`).then(result =>{
+      await axios.post(`http://${this.deviceState.localIP}:80/close`).then(result =>{
         alert(result.data)
       });
     },

@@ -37,3 +37,111 @@
 
 [Mon May 06 15:34:56 2024] Log Level: Critical | $04b6f39d-2a1c-437d-bd45-175d1646254d | Message: 4 packets transmitted, 0 received, 100% packet loss, time 3046ms | Local IP: 192.168.0.13 | External IP: 212.80.46.166
 
+
+[Mon May 06 15:40:27 2024] Log Level: Warning | $bea72fb6-b75a-4632-9e1e-ec04d18c82f3 | Message: 4 packets transmitted, 3 received, 25% packet loss, time 3015ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[03:41:49 PM] Log Level: Critical | $78ae7552-7ba5-477f-baef-2cfc4057d662 | Message: Water was detected - 1.35254 cm | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[03:42:01 PM] Log Level: Critical | $15f363cc-2fa4-4152-a0c7-77051452ed8a | Message: Water was detected - 5 cm | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[03:42:03 PM] Log Level: Critical | $1b7a9ae3-a63c-44cb-a4d5-8339f68b3d57 | Message: Water was detected - 1.40625 cm | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[03:42:06 PM] Log Level: Critical | $9b0a10e4-e26e-4ade-8ceb-515841a15a0f | Message: Water was detected - 5 cm | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[03:42:08 PM] Log Level: Critical | $d973e40c-0eef-41e2-acac-58155806ccc3 | Message: Water was detected - 2.07031 cm | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:42:16 2024] Log Level: Warning | $04430b36-5160-4abb-8e7e-4abdc7639e79 | Message: 4 packets transmitted, 3 received, 25% packet loss, time 3004ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:42:26 2024] Log Level: Critical | $8ab7e8c5-5cf3-4bb0-b539-9fee90fcf0c5 | Message: 4 packets transmitted, 0 received, 100% packet loss, time 3035ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:42:36 2024] Log Level: Critical | $6760370f-c7e0-411a-80a0-13a1c46c8640 | Message: 4 packets transmitted, 0 received, 100% packet loss, time 3054ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:42:46 2024] Log Level: Critical | $1d9d75bb-6f05-4083-871f-7fd8cf65b9d1 | Message: 4 packets transmitted, 0 received, 100% packet loss, time 3051ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:42:56 2024] Log Level: Critical | $80b523c8-5b97-443e-acb9-ae251142dfab | Message: 4 packets transmitted, 0 received, 100% packet loss, time 3051ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:43:06 2024] Log Level: Critical | $39a42de6-306d-46bd-86d9-545876d2e44a | Message: 4 packets transmitted, 0 received, +1 errors, 100% packet loss, time 3052ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:43:17 2024] Log Level: Critical | $b33c1103-15ad-43cd-82fa-95d12865225a | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3053ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:43:27 2024] Log Level: Critical | $3c8638c6-a221-4bb1-a8a7-0a7e132bc483 | Message: 4 packets transmitted, 0 received, +2 errors, 100% packet loss, time 3052ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:43:37 2024] Log Level: Critical | $920ef600-e32a-4ba5-b6d5-f028d89ed8ac | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3055ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:43:47 2024] Log Level: Critical | $be59f1b6-33cc-429d-b6b5-b6c4b524383a | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3051ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:43:58 2024] Log Level: Critical | $bacaa5ea-95cd-40cb-bd1f-a6064ca69004 | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3037ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:44:08 2024] Log Level: Critical | $532f7822-68f3-4e4f-8262-18aefd6732ee | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3038ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:44:18 2024] Log Level: Critical | $ffb4d028-0581-4aba-969e-7fdb0c493506 | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3043ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:44:28 2024] Log Level: Critical | $12ce5fcc-ff26-495c-bef0-61bf2c7f1d09 | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3030ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:44:38 2024] Log Level: Critical | $5169be5f-0256-4674-86e7-c404c127eba2 | Message: 4 packets transmitted, 0 received, +2 errors, 100% packet loss, time 3031ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:44:48 2024] Log Level: Critical | $d9439b8d-315d-483b-bccb-9246ff1ad402 | Message: 4 packets transmitted, 0 received, +4 errors, 100% packet loss, time 3028ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:44:58 2024] Log Level: Critical | $a074cf1d-7238-4558-9564-72b2b80b0a21 | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3018ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:45:08 2024] Log Level: Critical | $29616cf0-f261-4379-8832-bdcaaeb1a74f | Message: 4 packets transmitted, 0 received, +2 errors, 100% packet loss, time 3037ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:45:18 2024] Log Level: Critical | $98e5a394-b8dd-418f-8638-23c0dfade97d | Message: 4 packets transmitted, 0 received, +1 errors, 100% packet loss, time 3025ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:45:28 2024] Log Level: Critical | $425b1f64-84f0-4e22-a578-d9d68064758b | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3035ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:45:38 2024] Log Level: Critical | $ac238002-8abf-4495-872a-72ea6cb0e9eb | Message: 4 packets transmitted, 0 received, +2 errors, 100% packet loss, time 3039ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:45:48 2024] Log Level: Critical | $846ab64f-0c05-489f-8b11-6ef6063be874 | Message: 4 packets transmitted, 0 received, +1 errors, 100% packet loss, time 3039ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:45:58 2024] Log Level: Critical | $3fc83416-b087-4b0d-8e59-ce9582e3271b | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3022ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:46:08 2024] Log Level: Critical | $f30e84b1-a8e9-4090-b395-a027404b1104 | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3042ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:46:18 2024] Log Level: Critical | $54146313-1c78-45ff-b284-4caca69c9968 | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3042ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:46:28 2024] Log Level: Critical | $3ec6365b-ff5a-4e76-85bd-d8358cb86654 | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3042ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:46:38 2024] Log Level: Critical | $51773354-97e2-498a-ae56-d170b4030f97 | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3042ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:46:48 2024] Log Level: Critical | $4425038f-2638-4635-8a7c-fbf9966956e8 | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3042ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:46:58 2024] Log Level: Critical | $855b8e4a-fe9d-483a-b450-fffc8eee31b7 | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3040ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Mon May 06 15:47:08 2024] Log Level: Critical | $e2e02e33-1630-49fb-9ac0-94be84ca6510 | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3040ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
