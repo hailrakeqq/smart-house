@@ -77,11 +77,6 @@ export default defineComponent({
   font-weight:bold;
 
 }
-.btn{
-    position:absolute;
-    top:430px;
-    left:150px;
-}
 nav {
   padding: 30px;
 

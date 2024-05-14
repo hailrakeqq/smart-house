@@ -123,7 +123,7 @@ public class MainController : Controller
         waterDetectRequestBody.Message += $"\n{Timestamp}";
         await _email.SendEmailAsync(waterDetectRequestBody.UserEmail, "SmartHouse: CRITICAL WATER DETECT", waterDetectRequestBody.Message);
 
-        _logger.AddLog(new Log(waterDetectRequestBody.LogLevel, waterDetectRequestBody.Timestamp, logMessage, waterDetectRequestBody.LocalIP, waterDetectRequestBody.ExternalIP));
+        _logger.AddLog(new Log(waterDetectRequestBody.LogLevel, Timestamp, logMessage, waterDetectRequestBody.LocalIP, waterDetectRequestBody.ExternalIP));
 
         return Ok();
     }

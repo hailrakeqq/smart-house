@@ -1,0 +1,33 @@
+
+[Sat May 11 09:43:30 2024] Log Level: Critical | $88fd6c36-8273-46a8-a1dd-50b54e8edaca | Message: Water was detected - 5 cm | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Sat May 11 09:44:33 2024] Log Level: Warning | $d28d1b4d-fb32-47ee-af77-1ec924476212 | Message: 4 packets transmitted, 3 received, 25% packet loss, time 3023ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Sat May 11 09:45:12 2024] Log Level: Warning | $0e09e78f-248c-4edd-8758-50fb008c526a | Message: 4 packets transmitted, 3 received, 25% packet loss, time 3004ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Sat May 11 09:45:21 2024] Log Level: Critical | $42b69437-fef9-4748-b77d-69221dc617b7 | Message: 4 packets transmitted, 0 received, 100% packet loss, time 3052ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Sat May 11 09:45:31 2024] Log Level: Critical | $35e42c8b-bcc4-4a5b-bafd-6e3fb26185de | Message: 4 packets transmitted, 0 received, 100% packet loss, time 3052ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Sat May 11 09:45:41 2024] Log Level: Critical | $acc8b1d9-564a-4369-afa7-33633bc96b33 | Message: 4 packets transmitted, 0 received, 100% packet loss, time 3045ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Sat May 11 09:45:51 2024] Log Level: Critical | $879688ad-7d1f-42b9-a53c-9c61ced1fce5 | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3050ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Sat May 11 09:46:01 2024] Log Level: Critical | $e40a3f8e-a5e6-41d5-b7ad-f624e49833c9 | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3046ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Sat May 11 09:46:11 2024] Log Level: Critical | $f17db5b1-8541-46a4-8ff7-ded36fdef634 | Message: 4 packets transmitted, 0 received, +1 errors, 100% packet loss, time 3046ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Sat May 11 09:46:20 2024] Log Level: Critical | $4d1612ae-52ad-4e86-92a8-79f0aa0100f1 | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3049ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
+
+[Sat May 11 09:46:30 2024] Log Level: Critical | $31cac1df-d4f6-4e84-8aa4-a4b6475a3daa | Message: 4 packets transmitted, 0 received, +3 errors, 100% packet loss, time 3037ms | Local IP: 192.168.0.14 | External IP: 212.80.46.166
+
